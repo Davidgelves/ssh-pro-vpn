@@ -19,6 +19,20 @@ chmod +x ./ssh-plus ./instalar-badvpn-seguro.sh
 sudo ./ssh-plus
 ```
 
+## Idioma / Language
+
+El instalador permite seleccionar idioma al iniciar:
+
+- `1` Espanol
+- `2` English
+
+Tambien puedes forzar idioma por variable:
+
+```bash
+sudo LANG_CHOICE=es ./ssh-plus
+sudo LANG_CHOICE=en ./ssh-plus
+```
+
 ## Variables opcionales
 
 ```bash

@@ -1,19 +1,70 @@
-#!/usr/bin/env bash
-set -Eeuo pipefail
+#!/bin/bash
+clear
+#--------------------------
+# SCRIPR SSH-PLUS
+# CANAL TELEGRAM: @ALFAINTERNET
+#--------------------------
 
-if [[ "${EUID}" -ne 0 ]]; then
-  echo "Ejecuta como root: sudo ./script/install"
-  exit 1
+# - Cores
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+SCOLOR='\033[0m'
+
+# - Verifica Execucao Como Root
+[[ "$EUID" -ne 0 ]] && {
+    echo -e "{RED}[x] VC PRECISA EXECULTAR COMO USUARIO ROOT !{SCOLOR}"
+    exit 1
+}
+
+# - Verifica Arquitetura Compativel
+case "$(uname -m)" in
+    'amd64' | 'x86_64')
+        arch='64'
+        ;;
+    'aarch64' | 'armv8')
+        arch='arm64'
+        ;;
+    *)
+        echo -e "${RED}[x] ARQUITETURA INCOMPATIVEL !${SCOLOR}"
+        exit 1
+        ;;
+esac
+
+# - Verifica OS Compativel
+if grep -qs "ubuntu" /etc/os-release; then
+	os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2 | tr -d '.')
+    [[ "$os_version" -lt 1804 ]] && {
+        echo -e "${RED}[x] VERSAO DO UBUNTU INCOMPATIVEL !\n${YELLOW}[!] REQUER UBUNTU 18.04 OU SUPERIOR !${SCOLOR}"
+        exit 1
+    }
+elif [[ -e /etc/debian_version ]]; then
+	os_version=$(grep -oE '[0-9]+' /etc/debian_version | head -1)
+    [[ "$os_version" -lt 9 ]] && {
+        echo -e "${RED}[x] VERSAO DO DEBIAN INCOMPATIVEL !\n${YELLOW}[!] REQUER DEBIAN 9 OU SUPERIOR !${SCOLOR}"
+        exit 1
+    }
+else
+    echo -e "${RED}[x] OS INCOMPATIVEL !\n${YELLOW}[!] REQUER DISTROS BASE DEBIAN/UBUNTU !${SCOLOR}"
+    exit 1
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SAFE_INSTALLER="${PROJECT_DIR}/instalar-badvpn-seguro.sh"
+# - Atualiza Lista/Pacotes/Sistema
+dpkg --configure -a
+apt update -y && apt upgrade -y
+apt install unzip python3 -y
 
-if [[ ! -f "${SAFE_INSTALLER}" ]]; then
-  echo "No se encontro ${SAFE_INSTALLER}."
-  exit 1
+# - Desabilita ipv6
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -p
+echo 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/70-disable-ipv6.conf
+sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
+
+# - Executa instalador local (sem download remoto em runtime)
+BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+INSTALLER_LOCAL="${BASE_DIR}/script/${arch}/Plus"
+if [[ -f "${INSTALLER_LOCAL}" ]]; then
+    chmod +x "${INSTALLER_LOCAL}"
+    "${INSTALLER_LOCAL}"
+else
+    echo -e "${RED}[x] INSTALADOR LOCAL NAO ENCONTRADO: ${INSTALLER_LOCAL}${SCOLOR}"
+    exit 1
 fi
-
-chmod 750 "${SAFE_INSTALLER}"
-exec "${SAFE_INSTALLER}"
