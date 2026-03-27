@@ -95,6 +95,11 @@ _sshplus_sync_expcleaner() {
 		wget -qO /bin/expcleaner "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/expcleaner" && chmod +x /bin/expcleaner
 	fi
 }
+_sshplus_sync_infousers() {
+	if ! grep -q 'lang=es infousers' /bin/infousers 2>/dev/null; then
+		wget -qO /bin/infousers "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/infousers" && chmod +x /bin/infousers
+	fi
+}
 x="ok"
 menu ()
 {
@@ -506,6 +511,7 @@ case "$x" in
    ;;     
    9 | 09)
    clear
+   _sshplus_sync_infousers
    infousers
    echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-para volver al menú}\033[0m"; read
    ;;
