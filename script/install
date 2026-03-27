@@ -51,20 +51,37 @@ fi
 # - Atualiza Lista/Pacotes/Sistema
 dpkg --configure -a
 apt update -y && apt upgrade -y
-apt install unzip python3 -y
+apt install -y unzip python3 curl wget
 
 # - Desabilita ipv6
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -p
 echo 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/70-disable-ipv6.conf
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
-# - Executa instalador local (sem download remoto em runtime)
-BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+# - Executa instalador: local ou fallback (pipe /dev/fd)
+SSHPRO_REPO_RAW="${SSHPRO_REPO_RAW:-https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 INSTALLER_LOCAL="${BASE_DIR}/script/${arch}/Plus"
+
+run_plus() {
+    chmod +x "$1"
+    exec "$1"
+}
+
 if [[ -f "${INSTALLER_LOCAL}" ]]; then
-    chmod +x "${INSTALLER_LOCAL}"
-    "${INSTALLER_LOCAL}"
-else
-    echo -e "${RED}[x] INSTALADOR LOCAL NAO ENCONTRADO: ${INSTALLER_LOCAL}${SCOLOR}"
-    exit 1
+    run_plus "${INSTALLER_LOCAL}"
 fi
+
+TMP_PLUS="$(mktemp)"
+if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "${SSHPRO_REPO_RAW}/script/${arch}/Plus" -o "${TMP_PLUS}" || true
+elif command -v wget >/dev/null 2>&1; then
+    wget -qO "${TMP_PLUS}" "${SSHPRO_REPO_RAW}/script/${arch}/Plus" || true
+fi
+if [[ -s "${TMP_PLUS}" ]]; then
+    run_plus "${TMP_PLUS}"
+fi
+
+echo -e "${RED}[x] NAO FOI POSSIVEL CARREGAR O INSTALADOR Plus.${SCOLOR}"
+exit 1
