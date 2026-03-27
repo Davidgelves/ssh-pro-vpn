@@ -1,4 +1,13 @@
 #!/bin/bash
+# Si /bin/otimizar es antiguo (portugués), sustituir desde GitHub y reejecutar.
+_inf="${BASH_SOURCE[0]:-$0}"
+if ! grep -q 'lang=es otimizar' "$_inf" 2>/dev/null; then
+	wget -qO /bin/otimizar "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/otimizar" && chmod +x /bin/otimizar || {
+		echo -e "\033[1;31mNo se pudo actualizar otimizar desde GitHub.\033[0m"
+		exit 1
+	}
+	exec /bin/otimizar
+fi
 # lang=es otimizar
 #===================================================
 #	SCRIPT: OPTIMIZAR	SSHPLUS MANAGER
@@ -51,7 +60,7 @@ echo ""
 echo -e "\033[1;32m        Eliminando paquetes conflictivos"
 echo ""
 fun_bar 'apt-get -f remove -y' 'apt-get clean -y'
-#Limpar o cache memoria RAM
+# Limpiar caché de memoria RAM
 clear
 echo -e "\033[1;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo ""
