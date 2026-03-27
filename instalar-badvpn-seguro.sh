@@ -78,6 +78,20 @@ is_on() { systemctl is-active "$1" >/dev/null 2>&1; }
 mark() { is_on "$1" && printf "${GREEN}o${NC}" || printf "${RED}x${NC}"; }
 pause() { read -r -p "Pressione ENTER para continuar..." _; }
 
+confirm_install() {
+  local title="$1"
+  clear
+  echo -e "${BLUE}                 INSTALADOR ${title}${NC}"
+  echo
+  echo -e "${YELLOW}VC ESTA PRESTES A INSTALAR O ${title} !${NC}"
+  echo
+  read -r -p "DESEJA CONTINUAR ? [s/n]: " yn
+  case "${yn,,}" in
+    s|sim|y|yes) return 0 ;;
+    *) echo "Instalacao cancelada."; sleep 1; return 1 ;;
+  esac
+}
+
 setup_squid() {
   aptq squid
   cat > /etc/squid/squid.conf <<'SQUID'
@@ -196,12 +210,42 @@ conexao_menu() {
     draw_conexao
     read -r -p "ESCOLHA OPCAO: " c
     case "$c" in
-      1|01) aptq openssh-server && systemctl enable --now ssh ;;
-      2|02) setup_squid ;;
-      3|03) setup_dropbear ;;
-      4|04) aptq openvpn && systemctl enable --now openvpn || true ;;
-      5|05) setup_socks ;;
-      6|06) setup_stunnel ;;
+      1|01)
+        confirm_install "OPENSSH" || continue
+        aptq openssh-server && systemctl enable --now ssh
+        systemctl is-active ssh >/dev/null 2>&1 && echo "OpenSSH instalado com sucesso." || echo "Falha ao iniciar OpenSSH."
+        pause
+        ;;
+      2|02)
+        confirm_install "SQUID PROXY" || continue
+        setup_squid
+        systemctl is-active squid >/dev/null 2>&1 && echo "Squid instalado com sucesso." || echo "Falha ao iniciar Squid."
+        pause
+        ;;
+      3|03)
+        confirm_install "DROPBEAR" || continue
+        setup_dropbear
+        systemctl is-active dropbear >/dev/null 2>&1 && echo "Dropbear instalado com sucesso (porta 442)." || echo "Falha ao iniciar Dropbear."
+        pause
+        ;;
+      4|04)
+        confirm_install "OPENVPN" || continue
+        aptq openvpn && systemctl enable --now openvpn || true
+        systemctl is-active openvpn >/dev/null 2>&1 && echo "OpenVPN instalado com sucesso." || echo "OpenVPN instalado, sem instancia ativa."
+        pause
+        ;;
+      5|05)
+        confirm_install "PROXY SOCKS" || continue
+        setup_socks
+        (systemctl is-active danted >/dev/null 2>&1 || systemctl is-active danted.service >/dev/null 2>&1) && echo "Proxy Socks instalado com sucesso." || echo "Falha ao iniciar Proxy Socks."
+        pause
+        ;;
+      6|06)
+        confirm_install "SSL TUNNEL" || continue
+        setup_stunnel
+        systemctl is-active stunnel4 >/dev/null 2>&1 && echo "SSL Tunnel instalado com sucesso." || echo "Falha ao iniciar SSL Tunnel."
+        pause
+        ;;
       7|8|9|10|11|12) echo "Opcao bloqueada no modo seguro."; sleep 1 ;;
       0|00) return ;;
       *) echo "Opcao invalida."; sleep 1 ;;
