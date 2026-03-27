@@ -105,6 +105,11 @@ _sshplus_sync_swapmemory() {
 		wget -qO /bin/swapmemory "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/swapmemory" && chmod +x /bin/swapmemory
 	fi
 }
+_sshplus_sync_gltunnel() {
+	if ! grep -q 'lang=es gltunnel' /bin/gltunnel 2>/dev/null; then
+		wget -qO /bin/gltunnel "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/gltunnel" && chmod +x /bin/gltunnel
+	fi
+}
 x="ok"
 menu ()
 {
@@ -580,6 +585,7 @@ case "$x" in
    menu2
    ;;
    g|G)
+   _sshplus_sync_gltunnel
    gltunnel
    ;;
    0|00)
