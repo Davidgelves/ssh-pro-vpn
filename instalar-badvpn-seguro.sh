@@ -73,23 +73,124 @@ CYAN='\033[1;36m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
-mem_total="$(free -h | awk '/Mem:/ {print $2}')"
-mem_used_pct="$(free | awk '/Mem:/ {printf "%.2f%%", ($3/$2)*100}')"
-cpu_used_pct="$(top -bn1 | awk -F',' '/Cpu\(s\)/ {gsub("%id","",$4); gsub(" ","",$4); printf "%.1f%%", 100-$4; exit}')"
-cpu_cores="$(nproc)"
-host_name="$(hostname)"
-up_time="$(uptime -p)"
-now_date="$(date '+%d-%m-%y')"
-now_time="$(date '+%T')"
+service_on() {
+  local s="$1"
+  systemctl is-active "$s" >/dev/null 2>&1
+}
 
-is_badvpn_on() {
-  systemctl is-active badvpn-udpgw >/dev/null 2>&1
+svc_mark() {
+  if service_on "$1"; then
+    printf "${GREEN}o${NC}"
+  else
+    printf "${RED}x${NC}"
+  fi
+}
+
+install_pkg() {
+  local pkg="$1"
+  DEBIAN_FRONTEND=noninteractive apt-get install -y "$pkg"
+}
+
+setup_squid_minimal() {
+  cat > /etc/squid/squid.conf <<'SQUID'
+http_port 3128
+acl localnet src 10.0.0.0/8
+acl localnet src 172.16.0.0/12
+acl localnet src 192.168.0.0/16
+acl localhost src 127.0.0.1/32
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+cache deny all
+access_log stdio:/var/log/squid/access.log
+SQUID
+}
+
+install_openssh() {
+  install_pkg openssh-server
+  systemctl enable --now ssh
+}
+
+install_squid() {
+  install_pkg squid
+  setup_squid_minimal
+  systemctl enable --now squid
+}
+
+install_dropbear() {
+  install_pkg dropbear
+  sed -i 's/^NO_START=.*/NO_START=0/' /etc/default/dropbear || true
+  sed -i 's/^DROPBEAR_PORT=.*/DROPBEAR_PORT=442/' /etc/default/dropbear || true
+  systemctl enable --now dropbear
+}
+
+install_openvpn() {
+  install_pkg openvpn
+  systemctl enable --now openvpn || true
+}
+
+install_dante() {
+  install_pkg dante-server
+  cat > /etc/danted.conf <<'DANTE'
+logoutput: /var/log/danted.log
+internal: 0.0.0.0 port = 1080
+external: eth0
+socksmethod: none
+clientmethod: none
+user.privileged: root
+user.unprivileged: nobody
+client pass {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+  log: connect error
+}
+socks pass {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+  protocol: tcp udp
+  log: connect error
+}
+DANTE
+  systemctl enable --now danted || systemctl enable --now danted.service || true
+}
+
+install_stunnel() {
+  install_pkg stunnel4
+  mkdir -p /etc/stunnel
+  if [[ ! -f /etc/stunnel/stunnel.pem ]]; then
+    openssl req -new -x509 -days 3650 -nodes \
+      -subj "/CN=$(hostname)" \
+      -out /etc/stunnel/stunnel.pem \
+      -keyout /etc/stunnel/stunnel.pem >/dev/null 2>&1
+    chmod 600 /etc/stunnel/stunnel.pem
+  fi
+  cat > /etc/stunnel/stunnel.conf <<'STUNNEL'
+pid = /var/run/stunnel4.pid
+setuid = stunnel4
+setgid = stunnel4
+foreground = no
+debug = 3
+[sslssh]
+accept = 443
+connect = 127.0.0.1:22
+cert = /etc/stunnel/stunnel.pem
+STUNNEL
+  sed -i 's/^ENABLED=.*/ENABLED=1/' /etc/default/stunnel4 || true
+  systemctl enable --now stunnel4
 }
 
 draw_panel() {
+  local mem_total mem_used_pct cpu_used_pct cpu_cores host_name up_time now_date now_time
+  mem_total="$(free -h | awk '/Mem:/ {print $2}')"
+  mem_used_pct="$(free | awk '/Mem:/ {printf "%.2f%%", ($3/$2)*100}')"
+  cpu_used_pct="$(top -bn1 | awk -F',' '/Cpu\(s\)/ {gsub("%id","",$4); gsub(" ","",$4); printf "%.1f%%", 100-$4; exit}')"
+  cpu_cores="$(nproc)"
+  host_name="$(hostname)"
+  up_time="$(uptime -p)"
+  now_date="$(date '+%d-%m-%y')"
+  now_time="$(date '+%T')"
+
   clear
   echo -e "${RED}===============================================================${NC}"
-  echo -e "${WHITE}                 SSH-PRO ${CYAN}@DAVIDGELVES${NC}"
+  echo -e "${WHITE}                 SSH-PRO ${CYAN}PANEL SEGURO${NC}"
   echo -e "${RED}===============================================================${NC}"
   echo -e "${GREEN}NOMBRE DEL SERVIDOR${NC}: ${WHITE}${host_name}${NC}"
   echo -e "${GREEN}SERVIDOR ENCENDIDO${NC}: ${WHITE}${up_time}${NC}"
@@ -97,20 +198,16 @@ draw_panel() {
   echo -e "${RED}---------------------------------------------------------------${NC}"
   echo -e "${CYAN}SISTEMA${NC}      RAM: ${WHITE}${mem_total}${NC} (${YELLOW}${mem_used_pct}${NC})   CPU: ${WHITE}${cpu_cores}${NC} cores (${YELLOW}${cpu_used_pct}${NC})"
   echo -e "${RED}---------------------------------------------------------------${NC}"
-  echo -e "${WHITE}[01]${NC} Ver estado BadVPN            ${WHITE}[12]${NC} Speedtest (proximamente)"
-  echo -e "${WHITE}[02]${NC} Reiniciar BadVPN             ${WHITE}[13]${NC} Banner (proximamente)"
-  echo -e "${WHITE}[03]${NC} Ver logs BadVPN              ${WHITE}[14]${NC} Trafico (proximamente)"
-  echo -e "${WHITE}[04]${NC} Puerto en escucha            ${WHITE}[15]${NC} Optimizar (proximamente)"
-  echo -e "${WHITE}[05]${NC} Estado systemd completo      ${WHITE}[16]${NC} Backup (proximamente)"
-  echo -e "${WHITE}[06]${NC} Habilitar autostart          ${WHITE}[17]${NC} Herramientas (proximamente)"
-  echo -e "${WHITE}[07]${NC} Deshabilitar autostart       ${WHITE}[18]${NC} Limiter (proximamente)"
-  if is_badvpn_on; then
-    echo -e "${WHITE}[08]${NC} Menu BadVPN ${GREEN}(ON)${NC}            ${WHITE}[19]${NC} Firewall (proximamente)"
-  else
-    echo -e "${WHITE}[08]${NC} Menu BadVPN ${RED}(OFF)${NC}           ${WHITE}[19]${NC} Firewall (proximamente)"
-  fi
-  echo -e "${WHITE}[09]${NC} Detener BadVPN              ${WHITE}[20]${NC} Info VPS (proximamente)"
-  echo -e "${WHITE}[10]${NC} Iniciar BadVPN              ${WHITE}[21]${NC} Checkuser (proximamente)"
+  echo -e "${WHITE}[01]${NC} OpenSSH        [$(svc_mark ssh)]   ${WHITE}[12]${NC} Speedtest"
+  echo -e "${WHITE}[02]${NC} Squid Proxy    [$(svc_mark squid)]   ${WHITE}[13]${NC} Banner (proximamente)"
+  echo -e "${WHITE}[03]${NC} Dropbear       [$(svc_mark dropbear)]   ${WHITE}[14]${NC} Trafico (proximamente)"
+  echo -e "${WHITE}[04]${NC} OpenVPN        [$(svc_mark openvpn)]   ${WHITE}[15]${NC} Optimizar (proximamente)"
+  echo -e "${WHITE}[05]${NC} Proxy Socks    [$(svc_mark danted)]   ${WHITE}[16]${NC} Backup (proximamente)"
+  echo -e "${WHITE}[06]${NC} SSL Tunnel     [$(svc_mark stunnel4)]   ${WHITE}[17]${NC} Herramientas (proximamente)"
+  echo -e "${WHITE}[07]${NC} BadVPN Estado  [$(svc_mark badvpn-udpgw)]   ${WHITE}[18]${NC} Limiter (proximamente)"
+  echo -e "${WHITE}[08]${NC} BadVPN Reiniciar            ${WHITE}[19]${NC} Firewall (proximamente)"
+  echo -e "${WHITE}[09]${NC} BadVPN Logs                 ${WHITE}[20]${NC} Info VPS"
+  echo -e "${WHITE}[10]${NC} Puertos en escucha          ${WHITE}[21]${NC} V2Ray/Trojan (en desarrollo seguro)"
   echo -e "${WHITE}[11]${NC} Ayuda comandos              ${WHITE}[22]${NC} Mas (proximamente)"
   echo -e "${WHITE}[ 0]${NC} Salir"
   echo -e "${RED}===============================================================${NC}"
@@ -128,24 +225,29 @@ while true; do
   draw_panel
   read -r -p "INFORME UNA OPCION: " opt
   case "${opt}" in
-    1) show_status_short; read -r -p "Enter para continuar..." _ ;;
-    2) systemctl restart badvpn-udpgw && echo "Reiniciado."; sleep 1 ;;
-    3) journalctl -u badvpn-udpgw -f ;;
-    4) show_port; read -r -p "Enter para continuar..." _ ;;
-    5) systemctl --no-pager --full status badvpn-udpgw.service || true; read -r -p "Enter para continuar..." _ ;;
-    6) systemctl enable badvpn-udpgw && echo "Autostart habilitado."; sleep 1 ;;
-    7) systemctl disable badvpn-udpgw && echo "Autostart deshabilitado."; sleep 1 ;;
-    8) show_status_short; read -r -p "Enter para continuar..." _ ;;
-    9) systemctl stop badvpn-udpgw && echo "Servicio detenido."; sleep 1 ;;
-    10) systemctl start badvpn-udpgw && echo "Servicio iniciado."; sleep 1 ;;
+    1) install_openssh; sleep 1 ;;
+    2) install_squid; sleep 1 ;;
+    3) install_dropbear; sleep 1 ;;
+    4) install_openvpn; sleep 1 ;;
+    5) install_dante; sleep 1 ;;
+    6) install_stunnel; sleep 1 ;;
+    7) show_status_short; read -r -p "Enter para continuar..." _ ;;
+    8) systemctl restart badvpn-udpgw && echo "BadVPN reiniciado."; sleep 1 ;;
+    9) journalctl -u badvpn-udpgw -f ;;
+    10) show_port; read -r -p "Enter para continuar..." _ ;;
     11)
       echo "Comandos utiles:"
+      echo "  menu"
+      echo "  systemctl status ssh squid dropbear openvpn stunnel4 danted badvpn-udpgw"
       echo "  systemctl status badvpn-udpgw"
       echo "  journalctl -u badvpn-udpgw -f"
       echo "  ss -lntp | grep 7300"
       read -r -p "Enter para continuar..." _
       ;;
-    12|13|14|15|16|17|18|19|20|21|22) echo "Opcion en desarrollo."; sleep 1 ;;
+    12) install_pkg speedtest-cli || true; speedtest || true; read -r -p "Enter para continuar..." _ ;;
+    13|14|15|16|17|18|19) echo "Opcion en desarrollo."; sleep 1 ;;
+    20) uname -a; lsb_release -a 2>/dev/null || true; read -r -p "Enter para continuar..." _ ;;
+    21|22) echo "Opcion en desarrollo seguro."; sleep 1 ;;
     0) exit 0 ;;
     *) echo "Opcion invalida"; sleep 1 ;;
   esac
