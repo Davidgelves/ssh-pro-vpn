@@ -235,7 +235,7 @@ swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
 swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
 clear
 echo -e "\033[1;31m╔════════════════════════════════════════════════════════════╗\033[0m"
-echo -e "\033[1;31m║ \E[5;34;47m                 SSH-PLUS @ALFAINTERNET                   \E[0m \033[1;31m║"
+echo -e "\033[1;31m║ \E[5;34;47m                    SSH-PLUS @JDAVIDAG1                   \E[0m \033[1;31m║"
 echo -e "\033[1;31m╠════════════════════╦═══════════════════╦═══════════════════╣\033[0m"
 echo -e "\033[1;31m║  \033[1;32m${L_SISTEMA:-SISTEMA}           \033[1;31m║  \033[1;32m${L_MEM_RAM:-MEMORIA RAM}      \033[1;31m║ \033[1;32m ${L_PROCESSADOR:-PROCESADOR}      \033[1;31m║"
 echo -e "\033[1;31m║  \033[1;36mOS: \033[1;37m$_system    \033[1;31m║  \033[1;36mTotal:\033[1;37m$_ram \033[1;31m║  \033[1;36m${L_NUCLEOS:-Nucleos}: \033[1;37m$_core\033[0m   \033[1;31m║"
@@ -253,11 +253,11 @@ echo -e "\033[1;31m║  \033[1;32m${L_MEM_SWAP:-MEMORIA SWAP}    \033[1;36mTotal
 echo -e "\033[1;31m╠════════════════════════════════════════════════════════════╣\033[0m"
 echo -e "\033[1;31m║   [\033[1;36m21\033[1;31m] \033[1;37m• \033[1;33m${L2_21:-ADICIONAR HOST} \033[1;31m       [\033[1;36m28\033[1;31m] \033[1;37m• \033[1;33m${L2_28:-MUDAR SENHA ROOT} \033[1;31m  \033[1;31m  ║
 \033[1;31m║   [\033[1;36m22\033[1;31m] \033[1;37m• \033[1;33m${L2_22:-REMOVER HOST} \033[1;31m         [\033[1;36m29\033[1;31m] \033[1;37m• \033[1;33m${L2_29:-AUTO EXECUCAO} $autm \033[1;31m║
-\033[1;31m║   [\033[1;36m23\033[1;31m] \033[1;37m• \033[1;33m${L2_23:-CAMBIAR IDIOMA} \033[1;31m    [\033[1;36m30\033[1;31m] $var01 \033[1;33m${L2_30:-ATUALIZAR SCRIPT} \033[1;31m  \033[1;31m  ║
+\033[1;31m║   [\033[1;36m23\033[1;31m] \033[1;37m• \033[1;33m${L2_23:-IDIOMA} \033[1;31m            [\033[1;36m30\033[1;31m] $var01 \033[1;33m${L2_30:-ATUALIZAR SCRIPT} \033[1;31m  \033[1;31m  ║
 \033[1;31m║   [\033[1;36m24\033[1;31m] \033[1;37m• \033[1;33m${L2_24:-REINICIAR SERVICOS} \033[1;31m   [\033[1;36m31\033[1;31m] \033[1;37m• \033[1;33m${L2_31:-REMOVER SCRIPT} \033[1;31m  \033[1;31m    ║
 \033[1;31m║   [\033[1;36m25\033[1;31m] \033[1;37m• \033[1;33m${L2_25:-BLOCK TORRENT} $stsf\033[1;31m  [\033[1;36m32\033[1;31m] \033[1;37m• \033[1;33m${L2_32:-TCPTWEAKER}       \033[1;31m    \033[1;31m║
 \033[1;31m║   [\033[1;36m26\033[1;31m] \033[1;37m• \033[1;33m${L2_26:-BOT TELEGRAM} $stsbot\033[1;31m   [\033[1;36m33\033[1;31m] \033[1;37m• \033[1;33m${L2_33:-VOLTAR} \033[1;32m<\033[1;33m<\033[1;31m< \033[1;31m  \033[1;31m        ║
-\033[1;31m║   [\033[1;36m27\033[1;31m] \033[1;37m• \033[1;33m${L2_27:-BOT TESTE} $stsbotteste\033[1;31m      [\033[1;36m34\033[1;31m] \033[1;37m• \033[1;33m${L2_34:-REINICIAR SISTEMA} \033[1;31m       ║
+\033[1;31m║   [\033[1;36m27\033[1;31m] \033[1;37m• \033[1;33m${L2_27:-BOT TESTE} $stsbotteste\033[1;31m      [\033[1;36m34\033[1;31m] \033[1;37m• \033[1;33m${L2_34:-REINICIAR} \033[1;31m             ║
 \033[1;31m║   [\033[1;36m00\033[1;31m] \033[1;37m• \033[1;33m${L2_00:-SAIR} \033[1;32m<\033[1;33m<\033[1;31m<\033[1;31m  \033[1;31m                                           ║"
 echo -e "\033[1;31m╚════════════════════════════════════════════════════════════╝\033[0m"
 echo -ne "\033[1;31m╚╣\033[1;32m ${L_INFORME:-ELIGE UNA OPCIÓN} \033[1;33m:"; read x
@@ -323,7 +323,7 @@ case "$x" in
    exit;
    ;;
    *)
-   echo -e "\n\033[1;31m${L_OPC_INVALIDA:-¡Opción no válida!}\033[0m"
+   echo -e "\n\033[1;31m${L_OPC_INVALIDA:-Opcion no valida!}\033[0m"
    sleep 2
 esac
 done
@@ -366,7 +366,7 @@ swap2=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $4'})")
 swap3=$(printf '%-5s' "$(free -h | grep -i swap | awk {'print $3'})")
 clear
 echo -e "\033[1;31m╔════════════════════════════════════════════════════════════╗\033[0m"
-echo -e "\033[1;31m║ \E[5;34;47m                 SSH-PLUS @ALFAINTERNET                   \E[0m \033[1;31m║"
+echo -e "\033[1;31m║ \E[5;34;47m                    SSH-PLUS @JDAVIDAG1                   \E[0m \033[1;31m║"
 echo -e "\033[1;31m╠════════════════════╦═══════════════════╦═══════════════════╣\033[0m"
 echo -e "\033[1;31m║  \033[1;32m${L_SISTEMA:-SISTEMA}           \033[1;31m║  \033[1;32m${L_MEM_RAM:-MEMORIA RAM}      \033[1;31m║ \033[1;32m ${L_PROCESSADOR:-PROCESADOR}      \033[1;31m║"
 echo -e "\033[1;31m║  \033[1;36mOS: \033[1;37m$_system    \033[1;31m║  \033[1;36mTotal:\033[1;37m$_ram \033[1;31m║  \033[1;36m${L_NUCLEOS:-Nucleos}: \033[1;37m$_core\033[0m   \033[1;31m║"
@@ -389,18 +389,18 @@ echo -e "\033[1;31m║   \033[1;31m[\033[1;36m01\033[1;31m] \033[1;37m• \033[1
 \033[1;31m║   [\033[1;36m11\033[1;31m] \033[1;37m• \033[1;33m${L_M11:-CRIAR MEMORIA SWAP} \033[1;31m       [\033[1;36m22\033[1;31m] \033[1;37m• \033[1;33m${L_M22:-CHECKUSER 4G}  \033[1;31m   ║
 \033[1;31m║   [\033[1;36m G \033[1;31m] \033[1;37m• \033[1;33m${L_MG:-CHECKUSER GLTUNNEL} \033[1;31m      [\033[1;36m23\033[1;31m] \033[1;37m• \033[1;33m${L_M23:-MAIS} \033[1;31m>\033[1;33m>\033[1;32m>\033[0m \033[1;31m        ║"
 echo -e "\033[1;31m╚════════════════════════════════════════════════════════════╝\033[0m"
-echo -ne "\033[1;31m╚╣\033[1;32m ${L_INFORME:-ELIGE UNA OPCIÓN} \033[1;33m:"; read x
+echo -ne "\033[1;31m╚╣\033[1;32m ${L_INFORME:-ELIGE UNA OPCION} \033[1;33m:"; read x
 
 case "$x" in 
    1 | 01)
    clear
    criarusuario
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    2 | 02)
    clear
    criarteste
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    3 | 03)
    clear
@@ -410,7 +410,7 @@ case "$x" in
    4 | 04)
    clear
    sshmonitor
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;      
    5 | 05)
    clear
@@ -436,7 +436,7 @@ case "$x" in
    9 | 09)
    clear
    infousers
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    10)
    conexao
@@ -448,7 +448,7 @@ case "$x" in
    12)
    clear
    velocity
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    13)
    clear
@@ -464,11 +464,11 @@ case "$x" in
    15)
    clear
    otimizar
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    16)
    userbackup
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    17)
    clear
@@ -488,7 +488,7 @@ case "$x" in
    21)
    clear
    detalhes
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENÚ!}\033[0m"; read
+   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-ENTER para volver al MENU!}\033[0m"; read
    ;;
    22)
    initcheck
@@ -500,7 +500,7 @@ case "$x" in
    gltunnel
    ;;
    *)
-   echo -e "\n\033[1;31m${L_OPC_INVALIDA:-¡Opción no válida!}\033[0m"
+   echo -e "\n\033[1;31m${L_OPC_INVALIDA:-Opcion no valida!}\033[0m"
    sleep 2
 esac
 done
