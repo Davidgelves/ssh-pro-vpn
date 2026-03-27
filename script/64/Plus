@@ -17,6 +17,9 @@ case "${SSHPRO_RAW:-}" in
 	;;
 esac
 SSHPRO_RAW="${SSHPRO_RAW:-https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main}"
+# Mismo repo que SSHPRO_RAW: Install/list descarga /bin/menu y modulos (antes default sshpro-main → 404)
+export SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+export SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 _lnk=$(echo 'z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r' | sed -e 's/[^a-z.]//ig' | rev)
 _Ink=$(echo '/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×' | sed -e 's/[^a-z/]//ig')
 _1nk=$(echo '/3×u3#s×87r/83×l2×4×i0b×' | sed -e 's/[^a-z/]//ig')
@@ -210,6 +213,7 @@ echo -e "\n\033[1;36mVERIFICANDO ENLACE... \033[0m" ; rm -f $_Ink/list >/dev/nul
     echo -e "      \033[1;33mCOMPLETANDO FUNCIONES Y DEFINICIONES.\033[0m"
     echo ""
     fun_bar "$_Ink/list $_lnk $_Ink $_1nk $key"
+    [[ ! -x /bin/menu ]] && wget -qO /bin/menu "${SSHPRO_RAW}/Modulos/menu" 2>/dev/null && chmod +x /bin/menu
     clear
     echo ""
     cd $HOME
