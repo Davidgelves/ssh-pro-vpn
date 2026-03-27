@@ -114,6 +114,8 @@ echo -e "\n\033[1;36mVERIFICANDO LINK... \033[0m" ; rm $_Ink/list > /dev/null 2>
     cd /etc/rec
     wget https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Modulos/licence >/dev/null 2>&1
     chmod 777 licence >/dev/null 2>&1
+    mkdir -p /usr/lib
+    cp -f /etc/rec/licence /usr/lib/licence 2>/dev/null || echo 'by: @KIRITO_SSH' >/usr/lib/licence
     cd >/dev/null 2>&1
     #-----------------------------------------------------------------------------------------------------------------
     echo -e "\n\033[1;32mKEY VALIDA!\033[1;32m"

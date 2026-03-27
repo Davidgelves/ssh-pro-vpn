@@ -8,7 +8,17 @@ scor='\033[0m'
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 SCOLOR='\033[0m'
-[[ $(awk -F" " '{print $2}' /usr/lib/licence) == '@KIRITO_SSH' ]] && {
+# Licenca: Install/list grava em /usr/lib/sshplus; verificacao antiga so lia /usr/lib/licence (menu vazio).
+ensure_licence_conexao() {
+	mkdir -p /usr/lib
+	[[ -f /usr/lib/licence ]] && return 0
+	[[ -f /usr/lib/sshplus ]] && cp -f /usr/lib/sshplus /usr/lib/licence && return 0
+	[[ -f /etc/rec/licence ]] && cp -f /etc/rec/licence /usr/lib/licence && return 0
+	echo 'by: @KIRITO_SSH' >/usr/lib/licence
+	chmod 644 /usr/lib/licence
+}
+ensure_licence_conexao
+[[ $(awk -F" " '{print $2}' /usr/lib/licence 2>/dev/null) == '@KIRITO_SSH' ]] && {
 	ram1=$(free -h | grep -i mem | awk {'print $2'})
 	ram2=$(free -h | grep -i mem | awk {'print $4'})
 	ram3=$(free -h | grep -i mem | awk {'print $3'})
