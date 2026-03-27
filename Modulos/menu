@@ -4,7 +4,7 @@ comando[0]="$1"
 comando[1]="$2"
  (
 [[ -e $HOME/fim ]] && rm $HOME/fim
-[[ ! -e /usr/lib/sshplus ]] && rm -rf /bin/menu > /dev/null 2>&1
+# Nao apagar /bin/menu aqui (quebra opcao 23 / MENU2_ONLY com instalacao so BadVPN)
 ${comando[0]} -y > /dev/null 2>&1
 ${comando[1]} -y > /dev/null 2>&1
 touch $HOME/fim
@@ -36,7 +36,7 @@ comando[0]="$1"
 comando[1]="$2"
  (
 [[ -e $HOME/fim ]] && rm $HOME/fim
-[[ ! -d /etc/SSHPlus ]] && rm -rf /bin/menu
+# Nao apagar /bin/menu (instalacao minima sem /etc/SSHPlus ainda precisa do menu)
 ${comando[0]} > /dev/null 2>&1
 ${comando[1]} > /dev/null 2>&1
 touch $HOME/fim
@@ -193,12 +193,16 @@ function autoexec () {
 }
 #menu2
 menu2 (){
+# Licenca: aceita /usr/lib/licence OU /usr/lib/sshplus OU /etc/rec/licence (nunca apagar /bin inteiro)
+if [[ "${MENU2_ONLY:-}" != 1 ]] && [[ ! -e /usr/lib/licence ]] && [[ ! -e /usr/lib/sshplus ]] && [[ ! -e /etc/rec/licence ]]; then
+	rm -f /bin/menu /usr/bin/menu >/dev/null 2>&1
+fi
+while true; do
 [[ -e /etc/Plus-torrent ]] && stsf=$(echo -e "\033[1;32m(ON◉) ") || stsf=$(echo -e "\033[1;31m(OFF) ")
 stsbot=$(ps x | grep "bot_plus"|grep -v grep > /dev/null && echo -e "\033[1;32m(ON◉) " || echo -e "\033[1;31m(OFF) ")
 stsbotteste=$(ps x | grep "bot_teste"|grep -v grep > /dev/null && echo -e "\033[1;32m(ON◉) " || echo -e "\033[1;31m(OFF) ")
 stsbotrev=$(ps x | grep "bot_rev"|grep -v grep > /dev/null && echo -e "\033[1;32m(ON◉) " || echo -e "\033[1;31m(OFF) ")
 autm=$(grep "menu;" /etc/profile > /dev/null && echo -e "\033[1;32m(ON◉) " || echo -e "\033[1;31m(OFF) ")
-[[ ! -e /usr/lib/licence ]] && rm -rf /bin > /dev/null 2>&1
 if [[ "$(grep -c "Ubuntu" /etc/issue.net)" = "1" ]]; then
 system=$(cut -d' ' -f1 /etc/issue.net)
 system+=$(echo ' ')
@@ -259,13 +263,11 @@ case "$x" in
    clear
    addhost
    echo -ne "\n\033[1;31mENTER \033[1;33mpara retornar ao \033[1;32mMENU!\033[0m"; read
-   menu2
    ;;
    22)
    clear
    delhost
    echo -ne "\n\033[1;31mENTER \033[1;33mpara retornar ao \033[1;32mMENU!\033[0m"; read
-   menu2
    ;;
    23)
    clear
@@ -305,7 +307,7 @@ case "$x" in
    tcptweaker.sh
    ;;
    33)
-   menu
+   break
    ;;
    0|00)
    echo -e "\033[1;31mSaindo...\033[0m"
@@ -317,7 +319,10 @@ case "$x" in
    echo -e "\n\033[1;31mOpcao invalida !\033[0m"
    sleep 2
 esac
+done
 }
+# Chamado pelo menu "seguro" (/usr/local/bin/menu): abre so o submenu MAIS (menu2)
+[[ "${MENU2_ONLY:-}" == 1 ]] && menu2 && return 0
 while true $x != "ok"
 do
 stsl=$(ps x | grep "limiter"|grep -v grep > /dev/null && echo -e "\033[1;32m(ON◉) " || echo -e "\033[1;31m(OFF) ")
@@ -480,10 +485,10 @@ case "$x" in
    22)
    initcheck
    ;;
-   23)
+   23|023)
    menu2
    ;;
-   g)
+   g|G)
    gltunnel
    ;;
    *)

@@ -262,6 +262,14 @@ while true; do
     19) systemctl --no-pager --full status badvpn-udpgw.service | sed -n '1,10p'; pause ;;
     20) aptq ufw; ufw status verbose; pause ;;
     21) uname -a; free -h; df -h; pause ;;
+    23|023)
+      if [[ -x /bin/menu ]]; then
+        MENU2_ONLY=1 bash /bin/menu || true
+      else
+        echo "MAIS >>> requer o menu completo SSH-PLUS em /bin/menu (rode Install/list ou copie Modulos/menu)."
+        sleep 2
+      fi
+      ;;
     0) exit 0 ;;
     *) echo "Opcao em desenvolvimento (modo seguro)."; sleep 1 ;;
   esac
