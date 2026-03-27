@@ -489,7 +489,7 @@ ensure_licence_conexao
         fun_v2rayins() {
 			clear
 	        v2rayinst(){
-	            source <(curl -sL https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Modulos/v2ray)
+	            source <(curl -sL https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/v2ray)
                     sleep 6
 	        }
 	        if netstat -tunlp |grep v2ray 1> /dev/null 2> /dev/null; then
@@ -807,9 +807,9 @@ ensure_licence_conexao
 				cd /etc/stunnel/
 				rm -rf stunnel.conf
 				rm -rf stunnel.pem
-				wget https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Install/cert
-				wget https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Install/key
-				wget https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Install/stunnel
+				wget https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Install/cert
+				wget https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Install/key
+				wget https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Install/stunnel
 				mv cert cert.pem
 				mv key key.pem
 				mv stunnel stunnel.conf
@@ -1311,9 +1311,9 @@ ensure_licence_conexao
 			# Adquirindo easy-rsa
 			echo ""
 			fun_dep() {
-				wget -O ~/EasyRSA-3.0.1.tgz "https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Install/EasyRSA-3.0.1.tgz"
+				wget -O ~/EasyRSA-3.0.1.tgz "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Install/EasyRSA-3.0.1.tgz"
 				[[ ! -e $HOME/EasyRSA-3.0.1.tgz ]] && {
-					wget -O ~/EasyRSA-3.0.1.tgz "https://raw.githubusercontent.com/upalfadate/hdisbsi/main/Install/EasyRSA-3.0.1.tgz"
+					wget -O ~/EasyRSA-3.0.1.tgz "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Install/EasyRSA-3.0.1.tgz"
 				}
 				tar xzf ~/EasyRSA-3.0.1.tgz -C ~/
 				mv ~/EasyRSA-3.0.1/ /etc/openvpn/

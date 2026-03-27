@@ -59,7 +59,7 @@ echo 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/70-disable-ipv6.conf
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # - Executa instalador: local ou fallback (pipe /dev/fd)
-SSHPRO_REPO_RAW="${SSHPRO_REPO_RAW:-https://raw.githubusercontent.com/upalfadate/hdisbsi/main}"
+_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 INSTALLER_LOCAL="${BASE_DIR}/script/${arch}/Plus"
@@ -73,11 +73,12 @@ if [[ -f "${INSTALLER_LOCAL}" ]]; then
     run_plus "${INSTALLER_LOCAL}"
 fi
 
+_PLUS_URL="${_SSHPLUS_RAW_MAIN}/script/${arch}/Plus"
 TMP_PLUS="$(mktemp)"
 if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "${SSHPRO_REPO_RAW}/script/${arch}/Plus" -o "${TMP_PLUS}" || true
+    curl -fsSL "${_PLUS_URL}" -o "${TMP_PLUS}" || true
 elif command -v wget >/dev/null 2>&1; then
-    wget -qO "${TMP_PLUS}" "${SSHPRO_REPO_RAW}/script/${arch}/Plus" || true
+    wget -qO "${TMP_PLUS}" "${_PLUS_URL}" || true
 fi
 if [[ -s "${TMP_PLUS}" ]]; then
     run_plus "${TMP_PLUS}"

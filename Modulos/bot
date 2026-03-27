@@ -2,10 +2,8 @@
 #===================================================
 #   SCRIPT: BOT SSHPLUS MANAGER
 #   DATA ATT: 02 de Jun 2022
-#   DESENVOLVIDO POR: ALFAINTERNET
+#   DESARROLLADO POR: J DAVID AG
 #   API SHELLBOT: SHAMAN
-#   CONTATO TELEGRAM: http://t.me/ALFAINTERNET
-#   CANAL TELEGRAM: http://t.me/ALFAINTERNET
 #===================================================
 [[ ! -d /etc/SSHPlus ]] && exit 0
 [[ ! -d /etc/bot ]] && exit 0

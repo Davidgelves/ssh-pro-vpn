@@ -60,7 +60,8 @@ sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # - Executa instalador: local (git clone) ou fallback (bash <(wget ...))
 #   Com process substitution, $0 fica em /dev/fd/N — dirname quebra; resolvemos com BASH_SOURCE.
-SSHPRO_REPO_RAW="${SSHPRO_REPO_RAW:-https://raw.githubusercontent.com/upalfadate/hdisbsi/main}"
+# URL fija del instalador Plus (no usar SSHPRO_REPO_RAW: en VPS suele quedar el repo viejo y se instala mal).
+_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_LOCAL="${SCRIPT_DIR}/script/${arch}/Plus"
 
@@ -74,16 +75,17 @@ if [[ -f "${INSTALLER_LOCAL}" ]]; then
 fi
 
 # Fallback: one-liner via bash <(wget ...) (script em /dev/fd — sem pasta ao lado)
+_PLUS_URL="${_SSHPLUS_RAW_MAIN}/script/${arch}/Plus"
 TMP_PLUS="$(mktemp)"
 if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "${SSHPRO_REPO_RAW}/script/${arch}/Plus" -o "${TMP_PLUS}" || true
+    curl -fsSL "${_PLUS_URL}" -o "${TMP_PLUS}" || true
 elif command -v wget >/dev/null 2>&1; then
-    wget -qO "${TMP_PLUS}" "${SSHPRO_REPO_RAW}/script/${arch}/Plus" || true
+    wget -qO "${TMP_PLUS}" "${_PLUS_URL}" || true
 fi
 if [[ -s "${TMP_PLUS}" ]]; then
     run_plus "${TMP_PLUS}"
 fi
 
 echo -e "${RED}[x] No se pudo cargar el instalador Plus.${SCOLOR}"
-echo -e "${YELLOW}    Use: git clone https://github.com/upalfadate/hdisbsi.git && cd hdisbsi && bash ssh-plus${SCOLOR}"
+echo -e "${YELLOW}    Use: git clone https://github.com/Davidgelves/ssh-pro-vpn.git && cd ssh-pro-vpn && bash ssh-plus${SCOLOR}"
 exit 1

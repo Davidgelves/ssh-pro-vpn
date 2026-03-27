@@ -43,7 +43,7 @@ rm -f /etc/SSHPlus/ShellBot.sh /etc/SSHPlus/cabecalho /etc/SSHPlus/open.py /etc/
 
 _dir1='/bin'
 _dir2='/etc/SSHPlus'
-_mdls=("addhost" "ajuda" "sshplus_lang" "alterarlimite" "alterarsenha" "tcptweaker.sh" "gltunnel" "utili" "multi" "apache2menu" "check" "chuser" "limit" "rps_cpu" "attscript" "Autobackup" "backup_mail.sh" "badvpn" "badpro" "badpro1" "badvpn2" "badvpn3" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "cabecalho" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "dns-netflix.sh" "droplimiter" "expcleaner" "ban.sh" "fr" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "menu" "menub" "mudardata" "mtuning" "multi" "open.py" "otimizar" "painelv2ray" "prissh" "prnet.sh" "proxy.py" "reiniciarservicos" "reiniciarsistema" "remover" "senharoot" "ShellBot.sh" "speedtest" "sshmonitor" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "verifatt" "verifbot" "v2raymanager" "webmin.sh" "websocket.sh" "wsproxy.py" "pkill.sh")
+_mdls=("addhost" "ajuda" "sshplus_lang" "alterarlimite" "alterarsenha" "tcptweaker.sh" "gltunnel" "utili" "multi" "apache2menu" "check" "chuser" "limit" "rps_cpu" "attscript" "badvpn" "badpro" "badpro1" "badvpn2" "badvpn3" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "droplimiter" "expcleaner" "fr" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "menu" "menub" "mudardata" "mtuning" "open.py" "otimizar" "painelv2ray" "proxy.py" "reiniciarservicos" "reiniciarsistema" "remover" "senharoot" "ShellBot.sh" "speedtest" "sshmonitor" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "verifatt" "verifbot" "v2raymanager" "webmin.sh" "websocket.sh" "wsproxy.py" "pkill.sh")
 
 echo "[*] Origen: ${SSHPLUS_RAW}/Modulos/"
 for _arq in ${_mdls[@]}; do
@@ -54,7 +54,10 @@ for _arq in ${_mdls[@]}; do
 	}
 	chmod +x "$_dir1/$_arq"
 done
-mv -f "$_dir1/cabecalho" "$_dir1/bot" "$_dir1/open.py" "$_dir1/proxy.py" "$_dir1/wsproxy.py" "$_dir2/"
+# Solo mover si existen (cabecalho puede no estar en el repo)
+for _f in cabecalho bot open.py proxy.py wsproxy.py; do
+	[[ -e "$_dir1/$_f" ]] && mv -f "$_dir1/$_f" "$_dir2/"
+done
 _lvk=$(wget -qO- "${SSHPLUS_RAW}/Modulos/versao" || true)
 if [[ -n "${_lvk:-}" ]]; then
 	echo "$_lvk" | sed -n '1 p' | cut -d' ' -f2 >/bin/versao 2>/dev/null || true

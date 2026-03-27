@@ -1,10 +1,10 @@
 #!/bin/bash
 clear
-#--------@ALFAINTERNET-----------#
+#-------- (Desarrollado por) J DAVID AG -----------#
 source ShellBot.sh
 touch lista
 [[ -z $1 ]] && {
-    clear && echo "INFORME O TOKEN" && return 0
+    clear && echo "INTRODUZCA EL TOKEN" && return 0
 }
 [[ ! -e RESET ]] && touch RESET
 api_bot=$1
