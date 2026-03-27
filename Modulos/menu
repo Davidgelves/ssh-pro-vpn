@@ -100,6 +100,11 @@ _sshplus_sync_infousers() {
 		wget -qO /bin/infousers "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/infousers" && chmod +x /bin/infousers
 	fi
 }
+_sshplus_sync_swapmemory() {
+	if ! grep -q 'lang=es swapmemory' /bin/swapmemory 2>/dev/null; then
+		wget -qO /bin/swapmemory "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/swapmemory" && chmod +x /bin/swapmemory
+	fi
+}
 x="ok"
 menu ()
 {
@@ -520,6 +525,7 @@ case "$x" in
    exit;
    ;;
    11)
+   _sshplus_sync_swapmemory
    swapmemory
    ;;
    12)
