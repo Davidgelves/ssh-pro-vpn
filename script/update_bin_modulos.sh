@@ -17,14 +17,25 @@ set -euo pipefail
 	exit 1
 }
 
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
-SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
-# Placeholders del ejemplo — no deben usarse en producción
-case "${SSHPLUS_GH_USER_REPO}" in
-usuario/tu-repo|tu_usuario/tu_repo|usuario/repo)
+# Quitar \r y espacios (copias desde Windows / .bashrc mal pegadas)
+_sshplus_trim() {
+	local r="${1:-}"
+	r="${r//$'\r'/}"
+	r="${r//$'\n'/}"
+	r="${r#"${r%%[![:space:]]*}"}"
+	r="${r%"${r##*[![:space:]]}"}"
+	printf '%s' "$r"
+}
+SSHPLUS_GH_USER_REPO="$(_sshplus_trim "${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}")"
+[[ -z "$SSHPLUS_GH_USER_REPO" ]] && SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn"
+SSHPLUS_GH_BRANCH="$(_sshplus_trim "${SSHPLUS_GH_BRANCH:-main}")"
+[[ -z "$SSHPLUS_GH_BRANCH" ]] && SSHPLUS_GH_BRANCH="main"
+# Placeholders del ejemplo (cualquier variante) — forzar repo real
+_r_lc=$(printf '%s' "$SSHPLUS_GH_USER_REPO" | tr '[:upper:]' '[:lower:]')
+if [[ "$_r_lc" == *usuario/tu-repo* ]] || [[ "$_r_lc" == "tu_usuario/tu_repo" ]] || [[ "$_r_lc" == "usuario/repo" ]]; then
 	SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn"
-	;;
-esac
+fi
+unset SSHPLUS_RAW
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 
 mkdir -p /etc/SSHPlus
