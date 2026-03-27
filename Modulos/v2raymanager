@@ -1,4 +1,5 @@
 #!/bin/bash
+# lang=es v2raymanager
 #====================================================
 #
 #====================================================
@@ -112,7 +113,7 @@ sed -i "44 s;$dm;$px;g" /etc/v2ray/config.json
     unistallv2 () {
     source <(curl -sL https://multi.netlify.app/v2ray.sh) --remove > /dev/null 2>&1
     rm -rf /etc/SSHPlus/RegV2ray > /dev/null 2>&1
-    echo -e "\n\033[1;32mV2RAY REMOVIDO COM SUCESSO !\033[0m"
+    echo -e "\n\033[1;32mV2RAY ELIMINADO CORRECTAMENTE.\033[0m"
     echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo -e "\033[1;37m• \033[1;33mEnter para continuar\033[1;31m" && read enter
     fun_v2raymanager

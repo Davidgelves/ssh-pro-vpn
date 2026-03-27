@@ -1,4 +1,6 @@
 #!/bin/bash
+# lang=es webmin
+[[ -f /bin/sshplus_lang ]] && . /bin/sshplus_lang
 fun_ip () {
 if [[ -e /etc/MEUIPADM ]]; then
 IP="$(cat /etc/MEUIPADM)"
@@ -82,8 +84,8 @@ ufw allow 10000/tcp
 sleep 1s
 service webmin restart > /dev/null 2>&1
 fun_ip
-echo -e "\033[1;34mAcesso via web usando o link \033[0;32mhttps://$IP:10000"
+echo -e "\033[1;34mAcceso web: \033[0;32mhttps://$IP:10000"
 echo -e ""
-echo -ne "\n\033[1;31mENTER \033[1;33mpara retornar ao \033[1;32mMENU!\033[0m"; read
+echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-para volver al menú}\033[0m"; read
 }
 web_min

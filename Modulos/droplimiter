@@ -1,4 +1,5 @@
 #!/bin/bash
+# lang=es droplimiter
 database="/root/usuarios.db"
 echo $$ > /tmp/pids
 fun_drop () {
@@ -35,14 +36,14 @@ done
 } 
 if [ ! -f "$database" ]
 then
-	echo "Arquivo /root/usuarios.db não encontrado"
+	echo "No se encontró el archivo /root/usuarios.db"
 	exit 1
 fi
 while true
 do
 	clear
 	echo -e "\E[42;1;37m               LIMITER DROPBEAR                \E[0m"
-    echo -e "\E[42;1;37m Ususario                       Conexao/Limite \E[0m"
+    echo -e "\E[42;1;37m Usuario                       Conexion/Limite \E[0m"
     while read usline
     do
 		user="$(echo $usline | cut -d' ' -f1)"

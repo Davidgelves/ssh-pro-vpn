@@ -514,17 +514,17 @@ _sshplus_box_triple_bot
 _sshplus_line_c " ${L_MEM_SWAP:-SWAP}  T:${swap1}  ${L_EM_USO:-U}:${swap3}  ${L_LIVRE:-L}:${swap2}"
 _sshplus_box_sep
 _sshplus_pair "01" "${L_M01:-CREAR USUARIO}" "12" "${L_M12:-SPEEDTEST}"
-_sshplus_pair "02" "${L_M02:-CRIAR TESTE}" "13" "${L_M13:-BANNER}"
-_sshplus_pair "03" "${L_M03:-REMOVER USUARIO}" "14" "${L_M14:-TRAFEGO}"
-_sshplus_pair "04" "${L_M04:-MONITOR ONLINE}" "15" "${L_M15:-OTIMIZAR}"
-_sshplus_pair "05" "${L_M05:-MUDAR DATA}" "16" "${L_M16:-RESPALDO}"
-_sshplus_pair "06" "${L_M06:-ALTERAR LIMITE}" "17" "${L_M17:-HERRAMIENTAS}"
-_sshplus_pair "07" "${L_M07:-MUDAR SENHA}" "18" "${L_M18:-LIMITER} ${stsl}"
-_sshplus_pair "08" "${L_M08:-REMOVER EXPIRADOS}" "19" "${L_M19:-Menu BadVpn} ${stsu}"
+_sshplus_pair "02" "${L_M02:-CREAR PRUEBA}" "13" "${L_M13:-BANNER}"
+_sshplus_pair "03" "${L_M03:-ELIMINAR USUARIO}" "14" "${L_M14:-TRAFICO}"
+_sshplus_pair "04" "${L_M04:-MONITOR ONLINE}" "15" "${L_M15:-OPTIMIZAR}"
+_sshplus_pair "05" "${L_M05:-CAMBIAR FECHA}" "16" "${L_M16:-RESPALDO}"
+_sshplus_pair "06" "${L_M06:-CAMBIAR LIMITE}" "17" "${L_M17:-HERRAMIENTAS}"
+_sshplus_pair "07" "${L_M07:-CAMBIAR CLAVE}" "18" "${L_M18:-LIMITER} ${stsl}"
+_sshplus_pair "08" "${L_M08:-ELIMINAR CADUCADOS}" "19" "${L_M19:-Menu BadVpn} ${stsu}"
 _sshplus_pair "09" "${L_M09:-INFORME DE USUARIOS}" "20" "${L_M20:-FIREWALL (PRO)}"
-_sshplus_pair "10" "${L_M10:-MODO DE CONEXAO}" "21" "${L_M21:-INFO VPS} >>"
-_sshplus_pair "11" "${L_M11:-CRIAR MEMORIA SWAP}" "22" "${L_M22:-CHECKUSER 4G}"
-_sshplus_pair_g "${L_MG:-CHECKUSER GLTUNNEL}" "${L_M23:-MAIS} >>"
+_sshplus_pair "10" "${L_M10:-MODO DE CONEXION}" "21" "${L_M21:-INFO VPS} >>"
+_sshplus_pair "11" "${L_M11:-CREAR MEMORIA SWAP}" "22" "${L_M22:-CHECKUSER 4G}"
+_sshplus_pair_g "${L_MG:-CHECKUSER GLTUNNEL}" "${L_M23:-MAS} >>"
 _sshplus_box_bot
 _sshplus_prompt; read x
 

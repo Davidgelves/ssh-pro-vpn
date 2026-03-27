@@ -83,12 +83,12 @@ confirm_install() {
   clear
   echo -e "${BLUE}                 INSTALADOR ${title}${NC}"
   echo
-  echo -e "${YELLOW}VC ESTA PRESTES A INSTALAR O ${title} !${NC}"
+  echo -e "${YELLOW}VA A INSTALAR ${title}.${NC}"
   echo
-  read -r -p "DESEJA CONTINUAR ? [s/n]: " yn
+  read -r -p "¿Desea continuar? [s/n]: " yn
   case "${yn,,}" in
-    s|sim|y|yes) return 0 ;;
-    *) echo "Instalacao cancelada."; sleep 1; return 1 ;;
+    s|si|sim|y|yes) return 0 ;;
+    *) echo "Instalacion cancelada."; sleep 1; return 1 ;;
   esac
 }
 
