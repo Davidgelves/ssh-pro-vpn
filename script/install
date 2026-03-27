@@ -73,14 +73,25 @@ if [[ -f "${INSTALLER_LOCAL}" ]]; then
     run_plus "${INSTALLER_LOCAL}"
 fi
 
-_PLUS_URL="${_SSHPLUS_RAW_MAIN}/script/${arch}/Plus"
+_PLUS_URLS=(
+    "${_SSHPLUS_RAW_MAIN}/script/${arch}/Plus"
+    "https://cdn.jsdelivr.net/gh/Davidgelves/ssh-pro-vpn@main/script/${arch}/Plus"
+)
 TMP_PLUS="$(mktemp)"
-if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "${_PLUS_URL}" -o "${TMP_PLUS}" || true
-elif command -v wget >/dev/null 2>&1; then
-    wget -qO "${TMP_PLUS}" "${_PLUS_URL}" || true
-fi
-if [[ -s "${TMP_PLUS}" ]]; then
+_PLUS_OK=0
+for _PLUS_U in "${_PLUS_URLS[@]}"; do
+    : >"${TMP_PLUS}"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "${_PLUS_U}" -o "${TMP_PLUS}" 2>/dev/null || true
+    elif command -v wget >/dev/null 2>&1; then
+        wget -qO "${TMP_PLUS}" "${_PLUS_U}" 2>/dev/null || true
+    fi
+    if [[ -s "${TMP_PLUS}" ]]; then
+        _PLUS_OK=1
+        break
+    fi
+done
+if [[ "${_PLUS_OK}" -eq 1 ]]; then
     run_plus "${TMP_PLUS}"
 fi
 
