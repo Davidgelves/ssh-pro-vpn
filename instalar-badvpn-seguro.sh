@@ -256,6 +256,7 @@ conexao_menu() {
 while true; do
   draw_main
   read -r -p "INFORME UMA OPCAO : " opt
+  opt=$(echo "$opt" | tr -d '[:space:]')
   case "$opt" in
     10) conexao_menu ;;
     12) aptq speedtest-cli || true; speedtest || true; pause ;;
@@ -373,6 +374,12 @@ systemctl daemon-reload
 systemctl enable --now badvpn-udpgw.service
 systemctl --no-pager --full status badvpn-udpgw.service || true
 install_safe_menu
+
+# Menu completo SSH-PLUS em /bin/menu: faz "menu" usar esse (opcao 23 MAIS, etc.)
+if [[ -x /bin/menu ]]; then
+  ln -sf /bin/menu "${MENU_PATH}"
+  ln -sf /bin/menu "${MENU_PATH_SBIN}"
+fi
 
 echo
 echo "$(tr done)"
