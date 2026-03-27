@@ -2,7 +2,7 @@
 # Si /bin/otimizar es antiguo (portugués), sustituir desde GitHub y reejecutar.
 _inf="${BASH_SOURCE[0]:-$0}"
 if ! grep -q 'lang=es otimizar' "$_inf" 2>/dev/null; then
-	wget -qO /bin/otimizar "https://raw.githubusercontent.com/Davidgelves/sshpro-main/main/Modulos/otimizar" && chmod +x /bin/otimizar || {
+	wget -qO /bin/otimizar "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/otimizar" && chmod +x /bin/otimizar || {
 		echo -e "\033[1;31mNo se pudo actualizar otimizar desde GitHub.\033[0m"
 		exit 1
 	}

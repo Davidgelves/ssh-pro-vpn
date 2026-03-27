@@ -2,7 +2,7 @@
 # Si /bin/infousers es antiguo (p. ej. portugués), sustituir desde GitHub y reejecutar (no depende del menu).
 _inf="${BASH_SOURCE[0]:-$0}"
 if ! grep -q 'lang=es infousers' "$_inf" 2>/dev/null; then
-	wget -qO /bin/infousers "https://raw.githubusercontent.com/Davidgelves/sshpro-main/main/Modulos/infousers" && chmod +x /bin/infousers || {
+	wget -qO /bin/infousers "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/infousers" && chmod +x /bin/infousers || {
 		echo -e "\033[1;31mNo se pudo actualizar infousers desde GitHub.\033[0m"
 		exit 1
 	}
