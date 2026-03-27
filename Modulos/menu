@@ -85,6 +85,11 @@ _sshplus_sync_criarusuario() {
 		wget -qO /bin/criarusuario "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/criarusuario" && chmod +x /bin/criarusuario
 	fi
 }
+_sshplus_sync_alterarsenha() {
+	if ! grep -q 'lang=es alterarsenha' /bin/alterarsenha 2>/dev/null; then
+		wget -qO /bin/alterarsenha "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/alterarsenha" && chmod +x /bin/alterarsenha
+	fi
+}
 x="ok"
 menu ()
 {
@@ -484,6 +489,7 @@ case "$x" in
    ;; 
    7 | 07)
    clear
+   _sshplus_sync_alterarsenha
    alterarsenha
    sleep 3
    ;;
