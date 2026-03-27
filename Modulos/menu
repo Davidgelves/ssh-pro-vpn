@@ -459,7 +459,6 @@ case "$x" in
    clear
    _sshplus_sync_criarusuario
    criarusuario
-   echo -ne "\n\033[1;31mENTER \033[1;33m${L_ENTER_MENU:-para volver al menú}\033[0m"; read
    ;;
    2 | 02)
    clear

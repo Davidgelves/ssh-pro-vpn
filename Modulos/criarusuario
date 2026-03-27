@@ -387,7 +387,6 @@ echo "$username $sshlimiter" >>/root/usuarios.db
 		echo -e "\033[1;32m 🔑 CONTRASEÑA: \033[1;37m$password"
 		echo -e "\033[1;32m ⌛ EXPIRA: \033[1;37m$gui"
 		echo -e "\033[1;32m 📲 LÍMITE DE CONEXIONES: \033[1;37m$sshlimiter"
-echo -ne "\n\033[1;31mENTER \033[1;33mpara volver al menú\033[0m"; read
 	}
 } || {
 	clear
@@ -397,5 +396,5 @@ echo -ne "\n\033[1;31mENTER \033[1;33mpara volver al menú\033[0m"; read
 		echo -e "\033[1;32m 🔑 CONTRASEÑA: \033[1;37m$password"
 		echo -e "\033[1;32m ⌛ EXPIRA: \033[1;37m$gui"
 		echo -e "\033[1;32m 📲 LÍMITE DE CONEXIONES: \033[1;37m$sshlimiter"
-echo -ne "\n\033[1;31mENTER \033[1;33mpara volver al menú\033[0m"; read
 }
+echo -ne "\n\033[1;31mENTER \033[1;33mpara volver al menú\033[0m"; read
