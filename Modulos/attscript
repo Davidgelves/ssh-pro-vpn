@@ -3,9 +3,9 @@ clear
 echo -e "\033[1;33mINICIANDO ACTUALIZACIÓN SSH-PLUS \033[0m"
 sleep 2s
 # Mismo repo que Install/list (edita en Install/list o exporta aqui):
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/sshpro-main}"
 case "${SSHPLUS_GH_USER_REPO}" in
-usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn" ;;
+usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/sshpro-main" ;;
 esac
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"

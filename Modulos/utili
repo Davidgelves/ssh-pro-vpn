@@ -4,7 +4,7 @@
 _sshplus_sync_herramientas_submodulos() {
 	for _m in blockt ddos multi blockuser badvpn2 badvpn3 badpro badpro1 menub mudardata delhost reiniciarservicos senharoot v2raymanager; do
 		if [[ ! -f "/bin/$_m" ]] || ! grep -aFq "lang=es $_m" "/bin/$_m" 2>/dev/null; then
-			wget -qO "/bin/$_m" "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/$_m" && chmod +x "/bin/$_m"
+			wget -qO "/bin/$_m" "https://raw.githubusercontent.com/Davidgelves/sshpro-main/main/Modulos/$_m" && chmod +x "/bin/$_m"
 		fi
 	done
 }

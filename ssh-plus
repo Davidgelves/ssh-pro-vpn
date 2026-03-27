@@ -61,7 +61,7 @@ sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 # - Executa instalador: local (git clone) ou fallback (bash <(wget ...))
 #   Com process substitution, $0 fica em /dev/fd/N — dirname quebra; resolvemos com BASH_SOURCE.
 # URL fija del instalador Plus (no usar SSHPRO_REPO_RAW: en VPS suele quedar el repo viejo y se instala mal).
-_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main"
+_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/sshpro-main/main"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_LOCAL="${SCRIPT_DIR}/script/${arch}/Plus"
 
@@ -87,5 +87,5 @@ if [[ -s "${TMP_PLUS}" ]]; then
 fi
 
 echo -e "${RED}[x] No se pudo cargar el instalador Plus.${SCOLOR}"
-echo -e "${YELLOW}    Use: git clone https://github.com/Davidgelves/ssh-pro-vpn.git && cd ssh-pro-vpn && bash ssh-plus${SCOLOR}"
+echo -e "${YELLOW}    Use: git clone https://github.com/Davidgelves/sshpro-main.git && cd sshpro-main && bash ssh-plus${SCOLOR}"
 exit 1

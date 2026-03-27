@@ -24,7 +24,7 @@ echo -e "${RED}$banner${SCOLOR}"
     chmod +x $PREFIX/bin/slowdns
     [[ $(grep -c 'slowdns' $PREFIX/etc/profile) == '0' ]] && echo 'slowdns' >> $PREFIX/etc/profile
     echo -e "\n${GREEN}DESCARGANDO EL SCRIPT, ESPERE... ${SCOLOR}"
-    curl -O https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/slowdns/dns > /dev/null 2>&1
+    curl -O https://raw.githubusercontent.com/Davidgelves/sshpro-main/main/slowdns/dns > /dev/null 2>&1
     echo -e "\n${RED}[${YELLOW}!${RED}] ${YELLOW}SCRIPT DESCARGADO. LA PRÓXIMA VEZ\nEJECUTE SOLO EL COMANDO ${RED}(${GREEN}slowdns${RED})\n${YELLOW}INCLUSO SIN CONEXIÓN.${SCOLOR}"
     chmod +x dns
 }

@@ -2,12 +2,12 @@
 #====================================================
 #	Dev. J DAVID AG
 #====================================================
-# Repo GitHub (usuario/repo y rama). Por defecto: Davidgelves/ssh-pro-vpn
+# Repo GitHub (usuario/repo y rama). Por defecto: Davidgelves/sshpro-main
 #   export SSHPLUS_GH_USER_REPO="usuario/repo"
 #   export SSHPLUS_GH_BRANCH="main"
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/sshpro-main}"
 case "${SSHPLUS_GH_USER_REPO}" in
-usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn" ;;
+usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/sshpro-main" ;;
 esac
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"

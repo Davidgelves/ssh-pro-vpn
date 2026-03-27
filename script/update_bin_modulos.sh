@@ -7,7 +7,7 @@
 #   export SSHPLUS_GH_USER_REPO="usuario/repo"
 #   bash script/update_bin_modulos.sh
 #
-# Por defecto: Davidgelves/ssh-pro-vpn (mismo repo que el instalador actual).
+# Por defecto: Davidgelves/sshpro-main (mismo repo que el instalador actual).
 # Si copiaste el ejemplo "usuario/tu-repo" en /root/.bashrc o /etc/profile, quitalo o exporta el repo bueno.
 
 set -euo pipefail
@@ -26,14 +26,14 @@ _sshplus_trim() {
 	r="${r%"${r##*[![:space:]]}"}"
 	printf '%s' "$r"
 }
-SSHPLUS_GH_USER_REPO="$(_sshplus_trim "${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}")"
-[[ -z "$SSHPLUS_GH_USER_REPO" ]] && SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn"
+SSHPLUS_GH_USER_REPO="$(_sshplus_trim "${SSHPLUS_GH_USER_REPO:-Davidgelves/sshpro-main}")"
+[[ -z "$SSHPLUS_GH_USER_REPO" ]] && SSHPLUS_GH_USER_REPO="Davidgelves/sshpro-main"
 SSHPLUS_GH_BRANCH="$(_sshplus_trim "${SSHPLUS_GH_BRANCH:-main}")"
 [[ -z "$SSHPLUS_GH_BRANCH" ]] && SSHPLUS_GH_BRANCH="main"
 # Placeholders del ejemplo (cualquier variante) — forzar repo real
 _r_lc=$(printf '%s' "$SSHPLUS_GH_USER_REPO" | tr '[:upper:]' '[:lower:]')
 if [[ "$_r_lc" == *usuario/tu-repo* ]] || [[ "$_r_lc" == "tu_usuario/tu_repo" ]] || [[ "$_r_lc" == "usuario/repo" ]]; then
-	SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn"
+	SSHPLUS_GH_USER_REPO="Davidgelves/sshpro-main"
 fi
 unset SSHPLUS_RAW
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
