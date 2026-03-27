@@ -2,7 +2,7 @@
 clear
 #--------------------------
 # SCRIPR SSH-PLUS
-# CANAL TELEGRAM: @ALFAINTERNET
+# Dev. J DAVID AG
 #--------------------------
 
 # - Cores
@@ -12,7 +12,7 @@ SCOLOR='\033[0m'
 
 # - Verifica Execucao Como Root
 [[ "$EUID" -ne 0 ]] && {
-    echo -e "{RED}[x] VC PRECISA EXECULTAR COMO USUARIO ROOT !{SCOLOR}"
+    echo -e "${RED}[x] Debe ejecutarse como usuario root.${SCOLOR}"
     exit 1
 }
 
@@ -25,7 +25,7 @@ case "$(uname -m)" in
         arch='arm64'
         ;;
     *)
-        echo -e "${RED}[x] ARQUITETURA INCOMPATIVEL !${SCOLOR}"
+        echo -e "${RED}[x] Arquitectura no compatible.${SCOLOR}"
         exit 1
         ;;
 esac
@@ -34,17 +34,17 @@ esac
 if grep -qs "ubuntu" /etc/os-release; then
 	os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2 | tr -d '.')
     [[ "$os_version" -lt 1804 ]] && {
-        echo -e "${RED}[x] VERSAO DO UBUNTU INCOMPATIVEL !\n${YELLOW}[!] REQUER UBUNTU 18.04 OU SUPERIOR !${SCOLOR}"
+        echo -e "${RED}[x] Versión de Ubuntu no compatible.\n${YELLOW}[!] Se requiere Ubuntu 18.04 o superior.${SCOLOR}"
         exit 1
     }
 elif [[ -e /etc/debian_version ]]; then
 	os_version=$(grep -oE '[0-9]+' /etc/debian_version | head -1)
     [[ "$os_version" -lt 9 ]] && {
-        echo -e "${RED}[x] VERSAO DO DEBIAN INCOMPATIVEL !\n${YELLOW}[!] REQUER DEBIAN 9 OU SUPERIOR !${SCOLOR}"
+        echo -e "${RED}[x] Versión de Debian no compatible.\n${YELLOW}[!] Se requiere Debian 9 o superior.${SCOLOR}"
         exit 1
     }
 else
-    echo -e "${RED}[x] OS INCOMPATIVEL !\n${YELLOW}[!] REQUER DISTROS BASE DEBIAN/UBUNTU !${SCOLOR}"
+    echo -e "${RED}[x] Sistema no compatible.\n${YELLOW}[!] Se requiere Debian/Ubuntu.${SCOLOR}"
     exit 1
 fi
 
@@ -60,7 +60,7 @@ sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # - Executa instalador: local (git clone) ou fallback (bash <(wget ...))
 #   Com process substitution, $0 fica em /dev/fd/N — dirname quebra; resolvemos com BASH_SOURCE.
-SSHPRO_REPO_RAW="${SSHPRO_REPO_RAW:-https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main}"
+SSHPRO_REPO_RAW="${SSHPRO_REPO_RAW:-https://raw.githubusercontent.com/upalfadate/hdisbsi/main}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALLER_LOCAL="${SCRIPT_DIR}/script/${arch}/Plus"
 
@@ -84,6 +84,6 @@ if [[ -s "${TMP_PLUS}" ]]; then
     run_plus "${TMP_PLUS}"
 fi
 
-echo -e "${RED}[x] NAO FOI POSSIVEL CARREGAR O INSTALADOR Plus.${SCOLOR}"
-echo -e "${YELLOW}    Use: git clone https://github.com/Davidgelves/ssh-pro-vpn.git && cd ssh-pro-vpn && bash ssh-plus${SCOLOR}"
+echo -e "${RED}[x] No se pudo cargar el instalador Plus.${SCOLOR}"
+echo -e "${YELLOW}    Use: git clone https://github.com/upalfadate/hdisbsi.git && cd hdisbsi && bash ssh-plus${SCOLOR}"
 exit 1

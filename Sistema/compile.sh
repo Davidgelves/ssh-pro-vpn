@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tput setaf 7 ; tput setab 4 ; tput bold ; printf '%50s%s%-20s\n' "BadVPN, created By ALFAINTERNET" ; tput sgr0
+tput setaf 7 ; tput setab 4 ; tput bold ; printf '%50s%s%-20s\n' "BadVPN — Dev. J DAVID AG" ; tput sgr0
 if [ -f "/usr/local/bin/badvpn-udpgw" ]
 then
 	tput setaf 3 ; tput bold ; echo ""

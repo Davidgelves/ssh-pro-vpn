@@ -47,21 +47,21 @@ service webmin restart > /dev/null 2>&1
 
 web_min () {
  [[ -e /etc/webmin/miniserv.conf ]] && {
-echo -e "\033[1;34m[\033[1;37m•\033[1;34m]\033[1;37m ➩ \033[1;33mREMOVER WEBMIN \033[0;32m"
-echo -e "\033[1;34mDeseja Prosseguir? [S/N]: \033[0;32m"; read x
+echo -e "\033[1;34m[\033[1;37m•\033[1;34m]\033[1;37m ➩ \033[1;33mELIMINAR WEBMIN \033[0;32m"
+echo -e "\033[1;34m¿Continuar? [S/N]: \033[0;32m"; read x
  [[ $x = @(n|N) ]] && msg -bar && return
  fun_bar "apt-get remove webmin -y"
-echo -e "\033[1;34m[\033[1;37m•\033[1;34m]\033[1;37m ➩ \033[1;33mREMOVIDO COM SUCESSO \033[0;32m"
+echo -e "\033[1;34m[\033[1;37m•\033[1;34m]\033[1;37m ➩ \033[1;33mELIMINADO CON ÉXITO \033[0;32m"
  [[ -e /etc/webmin/miniserv.conf ]] && rm /etc/webmin/miniserv.conf
  return 10
  }
 echo -e "\033[1;34m[\033[1;37m•\033[1;34m]\033[1;37m ➩ \033[1;33mINSTALAR WEBMIN \033[0;32m"
-echo -e "\033[1;34mDeseja Prosseguir? [S/N]: \033[0;32m"; read x
+echo -e "\033[1;34m¿Continuar? [S/N]: \033[0;32m"; read x
 [[ $x = @(n|N) ]] && msg -bar && return
 fun_bar "service ssh restart"
 fun_ip
-echo -ne "\033[1;34mConfirme seu ip \033[0;32m"; read -p ": " -e -i $IP ip
-echo -ne "\033[1;34mEstamos prontos para configurar seu servidor Webmin \033[0;32m"
+echo -ne "\033[1;34mConfirme su IP \033[0;32m"; read -p ": " -e -i $IP ip
+echo -ne "\033[1;34mListo para configurar Webmin en el servidor \033[0;32m"
 echo -ne "\033[1;34mDesea Seguir? [S/N]: \033[0;32m"; read x
 [[ $x = @(n|N) ]] && msg -bar && return
 # echo -e ""

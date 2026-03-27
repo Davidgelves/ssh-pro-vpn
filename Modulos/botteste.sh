@@ -1,7 +1,7 @@
 #!/bin/bash
 [[ $(screen -list| grep -c 'bot_teste') == '0' ]] && {
     clear
-    echo -e "\E[44;1;37m     ATIVACÃO BOT SSH TESTE     \E[0m"
+    echo -e "\E[44;1;37m     ACTIVACIÓN BOT SSH PRUEBA     \E[0m"
     echo ""
     echo -ne "\n\033[1;32mINFORME O TOKEN\033[1;37m: "
     read token
@@ -16,11 +16,11 @@
     sleep 1
     screen -dmS bot_teste ./botssh $token > /dev/null 2>&1
     clear
-    echo "BOT ATIVADO"
+    echo "BOT ACTIVADO"
     menu
 } || {
     screen -r -S "bot_teste" -X quit
     clear
-    echo "BOT DESATIVADO"
+    echo "BOT DESACTIVADO"
     menu
 }

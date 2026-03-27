@@ -1,11 +1,11 @@
 #!/bin/bash
 #====================================================
-#	@ALFAINTERNET
+#	Dev. J DAVID AG
 #====================================================
-# Repo GitHub (usuario/nombre-repo y rama). Cambia aqui o exporta antes de instalar:
+# Repo GitHub (usuario/nombre-repo y rama). Por defecto: upalfadate/hdisbsi
 #   export SSHPLUS_GH_USER_REPO="tu_usuario/tu_repo"
 #   export SSHPLUS_GH_BRANCH="main"
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-upalfadate/hdisbsi}"
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 _lvk=$(wget -qO- "${SSHPLUS_RAW}/Modulos/versao")
@@ -43,7 +43,7 @@ echo "PasswordAuthentication yes" >>/etc/ssh/sshd_config
 _dir1='/bin'
 _dir2='/etc/SSHPlus'
 rm $_dir2/ShellBot.sh $_dir2/cabecalho $_dir2/open.py $_dir2/proxy.py $_dir2/wsproxy.py >/dev/null 2>&1
-_mdls=("addhost" "ajuda" "sshplus_lang" "idioma" "alterarlimite" "alterarsenha" "tcptweaker.sh" "gltunnel" "utili" "multi" "apache2menu" "check" "chuser" "limit" "rps_cpu" "attscript" "Autobackup" "backup_mail.sh" "badvpn" "badpro" "badpro1" "badvpn2" "badvpn3" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "cabecalho" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "dns-netflix.sh" "droplimiter" "expcleaner" "ban.sh" "fr" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "menu" "menub" "mudardata" "mtuning" "multi" "open.py" "otimizar" "painelv2ray" "prissh" "prnet.sh" "proxy.py" "reiniciarservicos" "reiniciarsistema" "remover" "senharoot" "ShellBot.sh" "speedtest" "sshmonitor" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "verifatt" "verifbot" "v2raymanager" "webmin.sh" "websocket.sh" "wsproxy.py" "pkill.sh")
+_mdls=("addhost" "ajuda" "sshplus_lang" "alterarlimite" "alterarsenha" "tcptweaker.sh" "gltunnel" "utili" "multi" "apache2menu" "check" "chuser" "limit" "rps_cpu" "attscript" "Autobackup" "backup_mail.sh" "badvpn" "badpro" "badpro1" "badvpn2" "badvpn3" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "cabecalho" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "dns-netflix.sh" "droplimiter" "expcleaner" "ban.sh" "fr" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "menu" "menub" "mudardata" "mtuning" "multi" "open.py" "otimizar" "painelv2ray" "prissh" "prnet.sh" "proxy.py" "reiniciarservicos" "reiniciarsistema" "remover" "senharoot" "ShellBot.sh" "speedtest" "sshmonitor" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "verifatt" "verifbot" "v2raymanager" "webmin.sh" "websocket.sh" "wsproxy.py" "pkill.sh")
 for _arq in ${_mdls[@]}; do
 	[[ -e $_dir1/$_arq ]] && rm $_dir1/$_arq >/dev/null 2>&1
 	wget -c -P $_dir1 "${SSHPLUS_RAW}/Modulos/$_arq"

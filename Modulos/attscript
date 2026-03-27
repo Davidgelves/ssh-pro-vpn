@@ -1,9 +1,9 @@
 #!/bin/bash
 clear
-echo -e "\033[1;33mINICIANDO ATUALIZACAO SSH-PLUS \033[0m"
+echo -e "\033[1;33mINICIANDO ACTUALIZACIÓN SSH-PLUS \033[0m"
 sleep 2s
 # Mismo repo que Install/list (edita en Install/list o exporta aqui):
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-upalfadate/hdisbsi}"
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 tmp=$(mktemp)
@@ -12,7 +12,7 @@ if wget -qO "$tmp" "${SSHPLUS_RAW}/script/install"; then
 	bash "$tmp"
 	rm -f "$tmp"
 else
-	echo -e "\033[1;31mFalha ao baixar script/install. Verifique SSHPLUS_GH_USER_REPO / branch no GitHub.\033[0m"
+	echo -e "\033[1;31mFallo al descargar script/install. Revise SSHPLUS_GH_USER_REPO / rama en GitHub.\033[0m"
 	rm -f "$tmp"
 	exit 1
 fi

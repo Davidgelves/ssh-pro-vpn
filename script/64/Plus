@@ -210,17 +210,17 @@ echo -e "\n\033[1;36mVERIFICANDO LINK... \033[0m" ; rm -f $_Ink/list >/dev/null 
     echo 'DATE=$(date +"%d-%m-%y")' >>/root/.bashrc
     echo 'TIME=$(date +"%T")' >>/root/.bashrc
     echo 'figlet -k SSH-PLUS | lolcat' >>/root/.bashrc
-    echo 'echo -e " NOME DO SERVIDOR : $HOSTNAME"' >>/root/.bashrc
-    echo 'echo -e " SERVIDOR LIGADO À : $(uptime -p)"' >>/root/.bashrc
-    echo 'echo -e " DATA : $DATE"' >>/root/.bashrc
+    echo 'echo -e " NOMBRE DEL SERVIDOR : $HOSTNAME"' >>/root/.bashrc
+    echo 'echo -e " SERVIDOR EN MARCHA : $(uptime -p)"' >>/root/.bashrc
+    echo 'echo -e " FECHA : $DATE"' >>/root/.bashrc
     echo 'echo -e " HORA : $TIME"' >>/root/.bashrc
-    echo 'echo -e "@ALFAINTERNET"' >>.bashrc
-    echo 'echo -e "\033[1;31m DIGITE ( menu ) PARA ENTRAR\033[0m."' >>/root/.bashrc
+    echo 'echo -e "Dev. J DAVID AG"' >>.bashrc
+    echo 'echo -e "\033[1;31m ESCRIBA ( menu ) PARA ENTRAR\033[0m."' >>/root/.bashrc
     echo 'echo -e ""' >>/root/.bashrc
     date=$(date '+%Y-%m-%d <> %H:%M:%S')
     echo -e "\033[1;37m $system                          $date"
     figlet "SSH-PLUS" | lolcat
-    echo -e "\033[01;31m║\033[1;31m\033[5;34;47m                INSTALACAO CONCLUIDA               \033[1;33m \033[0m\033[01;31m║"
-    echo -e "\033[01;31m║\033[1;33mPARA INICIAR DIGITE: \033[1;32mmenu\033[0m"
-    echo -e "\033[01;31m║\033[1;33m MAIS INFORMACOES \033[1;31m(\033[1;36mTELEGRAM\033[1;31m): \033[1;37m@ALFAINTERNET\033[0m"
+    echo -e "\033[01;31m║\033[1;31m\033[5;34;47m                INSTALACIÓN FINALIZADA               \033[1;33m \033[0m\033[01;31m║"
+    echo -e "\033[01;31m║\033[1;33mPARA INICIAR ESCRIBA: \033[1;32mmenu\033[0m"
+    echo -e "\033[01;31m║\033[1;33m MÁS INFORMACIÓN \033[1;31m(\033[1;36mTELEGRAM\033[1;31m): \033[1;37mDev. J DAVID AG\033[0m"
     rm $HOME/Plus && cat /dev/null > ~/.bash_history && history -c

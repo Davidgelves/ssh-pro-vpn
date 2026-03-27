@@ -158,36 +158,36 @@ draw_main() {
   cpu_pct="$(top -bn1 | awk -F',' '/Cpu\(s\)/ {gsub("%id","",$4); gsub(" ","",$4); printf "%.1f%%", 100-$4; exit}')"
   cpu_cores="$(nproc)"
   clear
-  echo -e "${WHITE}   ${BLUE}SSH-PLUS @ALFAINTERNET${NC}"
+  echo -e "${WHITE}   ${BLUE}SSH-PLUS Dev. J DAVID AG${NC}"
   echo -e "${RED}============================================================${NC}"
   echo -e "${GREEN} SISTEMA${NC}      OS: $(. /etc/os-release && echo "$NAME" "$VERSION_ID")"
-  echo -e "${GREEN} MEMORIA RAM${NC}  Total: ${mem_total}   Em uso: ${mem_pct}"
-  echo -e "${GREEN} PROCESSADOR${NC}  Nucleos: ${cpu_cores}   Em uso: ${cpu_pct}"
+  echo -e "${GREEN} MEMORIA RAM${NC}  Total: ${mem_total}   En uso: ${mem_pct}"
+  echo -e "${GREEN} PROCESADOR${NC}  Nucleos: ${cpu_cores}   En uso: ${cpu_pct}"
   echo -e "${RED}------------------------------------------------------------${NC}"
-  echo -e "[01] - CRIAR USUARIO          [12] - SPEEDTEST"
-  echo -e "[02] - CRIAR TESTE            [13] - BANNER"
-  echo -e "[03] - REMOVER USUARIO        [14] - TRAFEGO"
-  echo -e "[04] - MONITOR ONLINE         [15] - OTIMIZAR"
-  echo -e "[05] - MUDAR DATA             [16] - BACKUP"
-  echo -e "[06] - ALTERAR LIMITE         [17] - FERRAMENTAS"
-  echo -e "[07] - MUDAR SENHA            [18] - LIMITER (OFF)"
-  echo -e "[08] - REMOVER EXPIRADOS      [19] - Menu BadVpn ($(mark badvpn-udpgw))"
-  echo -e "[09] - RELATORIO DE USUARIOS  [20] - FIREWALL"
-  echo -e "[10] - MODO DE CONEXAO        [21] - INFO VPS"
-  echo -e "[11] - CRIAR MEMORIA SWAP     [22] - CHECKUSER 4G"
-  echo -e "[ G ] - CHECKUSER GLTUNNEL    [23] - MAIS >>>"
-  echo -e "[ 0 ] - SAIR"
+  echo -e "[01] - CREAR USUARIO          [12] - SPEEDTEST"
+  echo -e "[02] - CREAR PRUEBA           [13] - BANNER"
+  echo -e "[03] - ELIMINAR USUARIO       [14] - TRAFICO"
+  echo -e "[04] - MONITOR ONLINE         [15] - OPTIMIZAR"
+  echo -e "[05] - CAMBIAR FECHA         [16] - BACKUP"
+  echo -e "[06] - MODIFICAR LIMITE       [17] - HERRAMIENTAS"
+  echo -e "[07] - CAMBIAR CLAVE         [18] - LIMITER (OFF)"
+  echo -e "[08] - ELIMINAR CADUCADOS     [19] - Menu BadVpn ($(mark badvpn-udpgw))"
+  echo -e "[09] - INFORME USUARIOS       [20] - FIREWALL"
+  echo -e "[10] - MODO CONEXION          [21] - INFO VPS"
+  echo -e "[11] - CREAR MEMORIA SWAP     [22] - CHECKUSER 4G"
+  echo -e "[ G ] - CHECKUSER GLTUNNEL    [23] - MAS >>>"
+  echo -e "[ 0 ] - SALIR"
   echo -e "${RED}============================================================${NC}"
 }
 
 draw_conexao() {
   clear
   echo -e "${WHITE}Ubuntu $(. /etc/os-release && echo "$VERSION_ID")${NC}    ${WHITE}$(date '+%Y-%m-%d <> %T')${NC}"
-  echo -e "${BLUE}                         CONEXAO${NC}"
+  echo -e "${BLUE}                         CONEXIÓN${NC}"
   echo -e "${RED}============================================================${NC}"
-  echo -e "SERVICO: OPENSSH PORTA: 22"
-  echo -e "SERVICO: PROXY SOCKS PORTA: 1080"
-  echo -e "SERVICO: SSL TUNNEL PORTA: 443"
+  echo -e "SERVICIO: OPENSSH PUERTO: 22"
+  echo -e "SERVICIO: PROXY SOCKS PUERTO: 1080"
+  echo -e "SERVICIO: SSL TUNNEL PUERTO: 443"
   echo -e "${RED}------------------------------------------------------------${NC}"
   echo -e "[ 01 ] -> OPENSSH      $(mark ssh)"
   echo -e "[ 02 ] -> SQUID PROXY  $(mark squid)"
@@ -195,67 +195,67 @@ draw_conexao() {
   echo -e "[ 04 ] -> OPENVPN      $(mark openvpn)"
   echo -e "[ 05 ] -> PROXY SOCKS  $(mark danted)"
   echo -e "[ 06 ] -> SSL TUNNEL   $(mark stunnel4)"
-  echo -e "[ 07 ] -> SSLH MULTIPLEX (desativado seguro)"
-  echo -e "[ 08 ] -> CHISEL (desativado seguro)"
-  echo -e "[ 09 ] -> SLOWDNS (desativado seguro)"
-  echo -e "[ 10 ] -> V2RAY (desativado seguro)"
-  echo -e "[ 11 ] -> TROJAN-GO (desativado seguro)"
-  echo -e "[ 12 ] -> WEBSOCKET (desativado seguro)"
-  echo -e "[ 00 ] -> VOLTAR <<<"
+  echo -e "[ 07 ] -> SSLH MULTIPLEX (desactivado seguro)"
+  echo -e "[ 08 ] -> CHISEL (desactivado seguro)"
+  echo -e "[ 09 ] -> SLOWDNS (desactivado seguro)"
+  echo -e "[ 10 ] -> V2RAY (desactivado seguro)"
+  echo -e "[ 11 ] -> TROJAN-GO (desactivado seguro)"
+  echo -e "[ 12 ] -> WEBSOCKET (desactivado seguro)"
+  echo -e "[ 00 ] -> VOLVER <<<"
   echo -e "${RED}============================================================${NC}"
 }
 
 conexao_menu() {
   while true; do
     draw_conexao
-    read -r -p "ESCOLHA OPCAO: " c
+    read -r -p "ELIJA OPCIÓN: " c
     case "$c" in
       1|01)
         confirm_install "OPENSSH" || continue
         aptq openssh-server && systemctl enable --now ssh
-        systemctl is-active ssh >/dev/null 2>&1 && echo "OpenSSH instalado com sucesso." || echo "Falha ao iniciar OpenSSH."
+        systemctl is-active ssh >/dev/null 2>&1 && echo "OpenSSH instalado correctamente." || echo "Fallo al iniciar OpenSSH."
         pause
         ;;
       2|02)
         confirm_install "SQUID PROXY" || continue
         setup_squid
-        systemctl is-active squid >/dev/null 2>&1 && echo "Squid instalado com sucesso." || echo "Falha ao iniciar Squid."
+        systemctl is-active squid >/dev/null 2>&1 && echo "Squid instalado correctamente." || echo "Fallo al iniciar Squid."
         pause
         ;;
       3|03)
         confirm_install "DROPBEAR" || continue
         setup_dropbear
-        systemctl is-active dropbear >/dev/null 2>&1 && echo "Dropbear instalado com sucesso (porta 442)." || echo "Falha ao iniciar Dropbear."
+        systemctl is-active dropbear >/dev/null 2>&1 && echo "Dropbear instalado correctamente (puerto 442)." || echo "Fallo al iniciar Dropbear."
         pause
         ;;
       4|04)
         confirm_install "OPENVPN" || continue
         aptq openvpn && systemctl enable --now openvpn || true
-        systemctl is-active openvpn >/dev/null 2>&1 && echo "OpenVPN instalado com sucesso." || echo "OpenVPN instalado, sem instancia ativa."
+        systemctl is-active openvpn >/dev/null 2>&1 && echo "OpenVPN instalado correctamente." || echo "OpenVPN instalado, sin instancia activa."
         pause
         ;;
       5|05)
         confirm_install "PROXY SOCKS" || continue
         setup_socks
-        (systemctl is-active danted >/dev/null 2>&1 || systemctl is-active danted.service >/dev/null 2>&1) && echo "Proxy Socks instalado com sucesso." || echo "Falha ao iniciar Proxy Socks."
+        (systemctl is-active danted >/dev/null 2>&1 || systemctl is-active danted.service >/dev/null 2>&1) && echo "Proxy Socks instalado correctamente." || echo "Fallo al iniciar Proxy Socks."
         pause
         ;;
       6|06)
         confirm_install "SSL TUNNEL" || continue
         setup_stunnel
-        systemctl is-active stunnel4 >/dev/null 2>&1 && echo "SSL Tunnel instalado com sucesso." || echo "Falha ao iniciar SSL Tunnel."
+        systemctl is-active stunnel4 >/dev/null 2>&1 && echo "SSL Tunnel instalado correctamente." || echo "Fallo al iniciar SSL Tunnel."
         pause
         ;;
-      7|8|9|10|11|12) echo "Opcao bloqueada no modo seguro."; sleep 1 ;;
+      7|8|9|10|11|12) echo "Opción bloqueada en modo seguro."; sleep 1 ;;
       0|00) return ;;
-      *) echo "Opcao invalida."; sleep 1 ;;
+      *) echo "Opción no válida."; sleep 1 ;;
     esac
   done
 }
 
 while true; do
   draw_main
-  read -r -p "INFORME UMA OPCAO : " opt
+  read -r -p "ELIJA UNA OPCIÓN : " opt
   opt=$(echo "$opt" | tr -d '[:space:]')
   case "$opt" in
     10) conexao_menu ;;
@@ -267,12 +267,12 @@ while true; do
       if [[ -x /bin/menu ]]; then
         MENU2_ONLY=1 bash /bin/menu || true
       else
-        echo "MAIS >>> requer o menu completo SSH-PLUS em /bin/menu (rode Install/list ou copie Modulos/menu)."
+        echo "MAS >>> requiere el menú completo SSH-PLUS en /bin/menu (ejecute Install/list o copie Modulos/menu)."
         sleep 2
       fi
       ;;
     0) exit 0 ;;
-    *) echo "Opcao em desenvolvimento (modo seguro)."; sleep 1 ;;
+    *) echo "Opción en desarrollo (modo seguro)."; sleep 1 ;;
   esac
 done
 EOF
