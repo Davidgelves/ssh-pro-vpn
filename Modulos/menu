@@ -90,6 +90,11 @@ _sshplus_sync_alterarsenha() {
 		wget -qO /bin/alterarsenha "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/alterarsenha" && chmod +x /bin/alterarsenha
 	fi
 }
+_sshplus_sync_expcleaner() {
+	if ! grep -q 'lang=es expcleaner' /bin/expcleaner 2>/dev/null; then
+		wget -qO /bin/expcleaner "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/expcleaner" && chmod +x /bin/expcleaner
+	fi
+}
 x="ok"
 menu ()
 {
@@ -494,6 +499,7 @@ case "$x" in
    ;;
    8 | 08)
    clear
+   _sshplus_sync_expcleaner
    expcleaner
    echo ""
    sleep 3
