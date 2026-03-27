@@ -313,14 +313,8 @@ case "$x" in
    clear
    reiniciarsistema
    ;;
-   33)
+   33|0|00)
    break
-   ;;
-   0|00)
-   echo -e "\033[1;31m${L_SAINDO:-Saliendo...}\033[0m"
-   sleep 2
-   clear
-   exit;
    ;;
    *)
    echo -e "\n\033[1;31m${L_OPC_INVALIDA:-Opcion no valida!}\033[0m"
@@ -498,6 +492,9 @@ case "$x" in
    ;;
    g|G)
    gltunnel
+   ;;
+   0|00)
+   clear
    ;;
    *)
    echo -e "\n\033[1;31m${L_OPC_INVALIDA:-Opcion no valida!}\033[0m"
