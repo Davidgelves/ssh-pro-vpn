@@ -16,7 +16,7 @@ case "${SSHPRO_RAW:-}" in
 	unset SSHPRO_RAW
 	;;
 esac
-SSHPRO_RAW="${SSHPRO_RAW:-https://raw.githubusercontent.com/Davidgelves/sshpro-main/main}"
+SSHPRO_RAW="${SSHPRO_RAW:-https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main}"
 _lnk=$(echo 'z1:y#x.5s0ul&p4hs$s.0a72d*n-e!v89e032:3r' | sed -e 's/[^a-z.]//ig' | rev)
 _Ink=$(echo '/3×u3#s87r/l32o4×c1a×l1/83×l24×i0b×' | sed -e 's/[^a-z/]//ig')
 _1nk=$(echo '/3×u3#s×87r/83×l2×4×i0b×' | sed -e 's/[^a-z/]//ig')

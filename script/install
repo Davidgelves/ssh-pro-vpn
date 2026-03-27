@@ -59,7 +59,7 @@ echo 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/70-disable-ipv6.conf
 sysctl -p -f /etc/sysctl.d/70-disable-ipv6.conf
 
 # - Executa instalador: local ou fallback (pipe /dev/fd)
-_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/sshpro-main/main"
+_SSHPLUS_RAW_MAIN="https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 INSTALLER_LOCAL="${BASE_DIR}/script/${arch}/Plus"
