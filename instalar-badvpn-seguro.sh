@@ -152,6 +152,7 @@ while true; do
 done
 EOF
   chmod 750 "${MENU_PATH}"
+  ln -sf "${MENU_PATH}" "${MENU_PATH_SBIN}"
   echo "$(tr menu_ready)"
 }
 
@@ -169,6 +170,7 @@ REPO_ARCHIVE_URL="https://github.com/ambrop72/badvpn/archive/refs/tags/${BADVPN_
 BIN_PATH="${INSTALL_PREFIX}/bin/badvpn-udpgw"
 SERVICE_PATH="/etc/systemd/system/badvpn-udpgw.service"
 MENU_PATH="/usr/local/bin/menu"
+MENU_PATH_SBIN="/usr/local/sbin/menu"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "$(tr must_root)"
