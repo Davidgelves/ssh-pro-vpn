@@ -845,11 +845,28 @@ speed_test() {
     rm -rf $HOME/speed >/dev/null 2>&1
     ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
         --text "🚀 TESTANDO VELOCIDADE DO SERVIDOR"
-    speedtest --share >speed
-    png=$(cat speed | sed -n '5 p' | awk -F : {'print $NF'})
-    down=$(cat speed | sed -n '7 p' | awk -F : {'print $NF'})
-    upl=$(cat speed | sed -n '9 p' | awk -F : {'print $NF'})
-    lnk=$(cat speed | sed -n '10 p' | awk {'print $NF'})
+    _sf="$HOME/speed"
+    if command -v speedtest-cli >/dev/null 2>&1; then
+        speedtest-cli --simple --share >"$_sf" 2>&1
+    elif command -v speedtest >/dev/null 2>&1; then
+        speedtest --share >"$_sf" 2>&1
+    else
+        echo "ERROR: speedtest-cli" >"$_sf"
+    fi
+    if [[ -s "$_sf" ]] && grep -qiE '^Ping[[:space:]]*:' "$_sf"; then
+        png=$(grep -iE '^Ping[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+        down=$(grep -iE '^Download[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+        upl=$(grep -iE '^Upload[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+    elif [[ -s "$_sf" ]] && grep -qiE '^Latency[[:space:]]*:' "$_sf"; then
+        png=$(grep -iE '^Latency[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+        down=$(grep -iE '^Download[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+        upl=$(grep -iE '^Upload[[:space:]]*:' "$_sf" | head -1 | sed 's/^[^:]*:[[:space:]]*//')
+    else
+        png=$(sed -n '5p' "$_sf" | awk -F: '{print $NF}')
+        down=$(sed -n '7p' "$_sf" | awk -F: '{print $NF}')
+        upl=$(sed -n '9p' "$_sf" | awk -F: '{print $NF}')
+    fi
+    lnk=$(grep -oE 'https?://[^[:space:]]+' "$_sf" | grep -E 'speedtest|\.png|result' | tail -1)
     local msg
     msg="=×=×=×=×=×=×=×=×=×=×=×=×=×=\n"
     msg+="<b>🚀 VELOCIDADE DO SERVIDOR 🚀</b>\n"
