@@ -1,4 +1,5 @@
 #!/bin/bash
+# lang=es sshplus_lang
 # Cargado por /bin/menu — solo español (fijo).
 
 SSHPLUS_LANG=es
@@ -33,7 +34,7 @@ L_M12="SPEEDTEST"
 L_M13="BANNER"
 L_M14="TRAFICO"
 L_M15="OPTIMIZAR"
-L_M16="BACKUP"
+L_M16="RESPALDO"
 L_M17="HERRAMIENTAS"
 L_M18="LIMITER"
 L_M19="Menu BadVpn"

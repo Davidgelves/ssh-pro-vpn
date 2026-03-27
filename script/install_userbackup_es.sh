@@ -1,4 +1,18 @@
 #!/bin/bash
+# Instala la versión en español de userbackup en /bin (sin depender de git push a GitHub).
+# Uso en la VPS (root):
+#   bash script/install_userbackup_es.sh
+# O sube este archivo por SFTP y ejecuta:
+#   bash install_userbackup_es.sh
+set -euo pipefail
+[[ "${EUID:-0}" -eq 0 ]] || {
+	echo "Ejecutar como root."
+	exit 1
+}
+_bak="/bin/userbackup.bak.$(date +%s)"
+[[ -f /bin/userbackup ]] && cp -a /bin/userbackup "$_bak" && echo "[*] Copia de seguridad: $_bak"
+cat > /bin/userbackup <<'USERBACKUP_ES'
+#!/bin/bash
 # lang=es userbackup
 clear
 backbot=$1
@@ -200,3 +214,6 @@ backbot=$1
 	[[ -d "/etc/SSHPlus/backups" ]] && mv /root/backup.vps /etc/SSHPlus/backups/backup.vps
 	exit
 }
+USERBACKUP_ES
+chmod +x /bin/userbackup
+echo "[OK] /bin/userbackup actualizado (español). Vuelve a abrir el menú de copias de seguridad."
