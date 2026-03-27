@@ -4,7 +4,7 @@
 SSHPLUS_LANG=es
 L_INFORME="ELIGE UNA OPCION"
 L_OPC_INVALIDA="Opcion no valida!"
-L_ENTER_MENU="ENTER para volver al MENU!"
+L_ENTER_MENU="para volver al menú"
 L_SAINDO="Saliendo..."
 L_SISTEMA="SISTEMA"
 L_MEM_RAM="MEMORIA RAM"
