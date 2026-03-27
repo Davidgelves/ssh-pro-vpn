@@ -6,6 +6,9 @@
 # O tras git push:
 #   export SSHPLUS_GH_USER_REPO="usuario/repo"
 #   bash script/update_bin_modulos.sh
+#
+# Por defecto: Davidgelves/ssh-pro-vpn (mismo repo que el instalador actual).
+# Si copiaste el ejemplo "usuario/tu-repo" en /root/.bashrc o /etc/profile, quitalo o exporta el repo bueno.
 
 set -euo pipefail
 
@@ -14,8 +17,14 @@ set -euo pipefail
 	exit 1
 }
 
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-upalfadate/hdisbsi}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
+# Placeholders del ejemplo — no deben usarse en producción
+case "${SSHPLUS_GH_USER_REPO}" in
+usuario/tu-repo|tu_usuario/tu_repo|usuario/repo)
+	SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn"
+	;;
+esac
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 
 mkdir -p /etc/SSHPlus

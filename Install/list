@@ -2,10 +2,13 @@
 #====================================================
 #	Dev. J DAVID AG
 #====================================================
-# Repo GitHub (usuario/nombre-repo y rama). Por defecto: upalfadate/hdisbsi
-#   export SSHPLUS_GH_USER_REPO="tu_usuario/tu_repo"
+# Repo GitHub (usuario/repo y rama). Por defecto: Davidgelves/ssh-pro-vpn
+#   export SSHPLUS_GH_USER_REPO="usuario/repo"
 #   export SSHPLUS_GH_BRANCH="main"
-SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-upalfadate/hdisbsi}"
+SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+case "${SSHPLUS_GH_USER_REPO}" in
+usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn" ;;
+esac
 SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 _lvk=$(wget -qO- "${SSHPLUS_RAW}/Modulos/versao")
