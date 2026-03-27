@@ -131,6 +131,11 @@ _sshplus_sync_userbackup() {
 		wget -qO /bin/userbackup "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/userbackup" && chmod +x /bin/userbackup
 	fi
 }
+_sshplus_sync_utili() {
+	if ! grep -q 'lang=es utili' /bin/utili 2>/dev/null; then
+		wget -qO /bin/utili "https://raw.githubusercontent.com/Davidgelves/ssh-pro-vpn/main/Modulos/utili" && chmod +x /bin/utili
+	fi
+}
 x="ok"
 menu ()
 {
@@ -513,7 +518,7 @@ _sshplus_pair "02" "${L_M02:-CRIAR TESTE}" "13" "${L_M13:-BANNER}"
 _sshplus_pair "03" "${L_M03:-REMOVER USUARIO}" "14" "${L_M14:-TRAFEGO}"
 _sshplus_pair "04" "${L_M04:-MONITOR ONLINE}" "15" "${L_M15:-OTIMIZAR}"
 _sshplus_pair "05" "${L_M05:-MUDAR DATA}" "16" "${L_M16:-RESPALDO}"
-_sshplus_pair "06" "${L_M06:-ALTERAR LIMITE}" "17" "${L_M17:-FERRAMENTAS}"
+_sshplus_pair "06" "${L_M06:-ALTERAR LIMITE}" "17" "${L_M17:-HERRAMIENTAS}"
 _sshplus_pair "07" "${L_M07:-MUDAR SENHA}" "18" "${L_M18:-LIMITER} ${stsl}"
 _sshplus_pair "08" "${L_M08:-REMOVER EXPIRADOS}" "19" "${L_M19:-Menu BadVpn} ${stsu}"
 _sshplus_pair "09" "${L_M09:-INFORME DE USUARIOS}" "20" "${L_M20:-FIREWALL (PRO)}"
@@ -612,6 +617,7 @@ case "$x" in
    ;;
    17)
    clear
+   _sshplus_sync_utili
    utili
    ;;
    18)
