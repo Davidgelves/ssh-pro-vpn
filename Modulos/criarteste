@@ -1,4 +1,5 @@
 #!/bin/bash
+# lang=es — Si ves portugués, el /bin/criarteste está desactualizado (menu lo actualiza solo).
 IP=$(cat /etc/IP)
 if [ ! -d /etc/SSHPlus/userteste ]; then
 mkdir /etc/SSHPlus/userteste
