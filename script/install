@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "Ejecuta como root: sudo ./script/install"
+  exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SAFE_INSTALLER="${PROJECT_DIR}/instalar-badvpn-seguro.sh"
+
+if [[ ! -f "${SAFE_INSTALLER}" ]]; then
+  echo "No se encontro ${SAFE_INSTALLER}."
+  exit 1
+fi
+
+chmod 750 "${SAFE_INSTALLER}"
+exec "${SAFE_INSTALLER}"
