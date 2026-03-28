@@ -1,0 +1,11 @@
+---
+description: Tras editar código en este repo, hacer commit y push a GitHub automáticamente.
+alwaysApply: true
+---
+
+# Git: subir cambios tras cada modificación
+
+- Al **terminar** una modificación de código que el usuario haya pedido (archivos guardados y tarea resuelta), **comprobar** `git status`.
+- Si hay cambios en el working tree, **hacer commit y push** a `origin` en la rama actual (normalmente `main`), salvo que el usuario pida explícitamente no subir nada o solo preparar el commit localmente.
+- Mensaje de commit: una línea en español, clara, describiendo **qué** cambió y **por qué** (no mensajes vacíos ni genéricos como "fix").
+- Si `git push` falla (red, auth), informar al usuario y dejar el commit local listo para cuando pueda empujar.
