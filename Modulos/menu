@@ -617,8 +617,8 @@ _sshplus_pair "08" "${L_M08:-ELIMINAR CADUCADOS}" "19" "${L_M19:-Menu BadVpn} ${
 _sshplus_pair "09" "${L_M09:-INFORME DE USUARIOS}" "20" "${L_M20:-FIREWALL (PRO)}"
 _sshplus_pair "10" "${L_M10:-MODO DE CONEXION}" "21" "${L_M21:-INFO VPS} >>"
 _sshplus_pair "11" "${L_M11:-CREAR MEMORIA SWAP}" "22" "${L_M22:-CHECKUSER 4G}"
-# [24] GLTUNNEL a la izquierda, [23] MAS a la derecha (lectura: GLTUNNEL antes que MAS)
-_sshplus_pair "24" "${L_MG:-CHECKUSER GLTUNNEL}" "23" "${L_M23:-MAS} >>"
+# [23] GLTUNNEL a la izquierda, [24] MAS a la derecha (L_M23 en sshplus_lang ya trae "MAS >>>")
+_sshplus_pair "23" "${L_MG:-CHECKUSER GLTUNNEL}" "24" "${L_M23:-MAS >>>}"
 _sshplus_box_bot
 _sshplus_prompt; read x
 
@@ -734,11 +734,11 @@ case "$x" in
    initcheck
    ;;
    23|023)
-   menu2
-   ;;
-   24|024)
    _sshplus_sync_gltunnel
    gltunnel
+   ;;
+   24|024)
+   menu2
    ;;
    g|G)
    _sshplus_sync_gltunnel
