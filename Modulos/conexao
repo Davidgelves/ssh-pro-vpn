@@ -2099,12 +2099,13 @@ echo -e "\033[0;31m║\033[0m"
 			} || {
 				sts4="\033[1;31m○ "
 			}
-			[[ -e "/etc/stunnel/stunnel.conf" ]] && {
-				echo -e "\033[01;31m║\033[1;32mSERVICIO: \033[1;33mSSL TUNNEL \033[1;32mPUERTO: \033[1;37m$(netstat -nplt | grep 'stunnel' | awk {'print $4'} | cut -d: -f2 | xargs)"
+			_ssl_pt="$(netstat -nplt 2>/dev/null | grep -E 'stunnel|stunnel4' | awk '{print $4}' | cut -d: -f2 | xargs)"
+			if [[ -n "${_ssl_pt// }" ]]; then
+				echo -e "\033[01;31m║\033[1;32mSERVICIO: \033[1;33mSSL TUNNEL \033[1;32mPUERTO: \033[1;37m${_ssl_pt}"
 				sts3="\033[1;32m◉ "
-			} || {
+			else
 				sts3="\033[1;31m○ "
-			}
+			fi
 			[[ "$(netstat -tlpn | grep 'dropbear' | wc -l)" != '0' ]] && {
 				echo -e "\033[01;31m║\033[1;32mSERVICIO: \033[1;33mDROPBEAR \033[1;32mPUERTO: \033[1;37m$(netstat -nplt | grep 'dropbear' | awk -F ":" {'print $4'} | xargs)"
 				sts2="\033[1;32m◉ "
