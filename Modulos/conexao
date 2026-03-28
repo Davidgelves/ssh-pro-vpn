@@ -1734,11 +1734,24 @@ PATCHWS
 		local _dl=0
 		mkdir -p /etc/SSHPlus
 		rm -f "${_pf}.new"
+		# Solo sustituir si el archivo es Python válido (evita HTML 404/red y proxy.py roto al reactivar [1]).
+		_fun_proxy_socks_new_ok() {
+			[[ -s "${_pf}.new" ]] || return 1
+			grep -q 'import socket' "${_pf}.new" || return 1
+			grep -q 'class Server' "${_pf}.new" || return 1
+			grep -qiE '<!DOCTYPE|<html' "${_pf}.new" && return 1
+			"${SSHPLUS_PY}" -c "import ast; ast.parse(open(r'''${_pf}.new''', encoding='utf-8', errors='replace').read())" 2>/dev/null || return 1
+			return 0
+		}
 		if command -v wget >/dev/null 2>&1; then
-			wget -qO "${_pf}.new" "$_url" && [[ -s "${_pf}.new" ]] && mv -f "${_pf}.new" "$_pf" && _dl=1
+			if wget -qO "${_pf}.new" "$_url" && _fun_proxy_socks_new_ok; then
+				mv -f "${_pf}.new" "$_pf" && _dl=1
+			fi
 		fi
 		if [[ "$_dl" != '1' ]] && command -v curl >/dev/null 2>&1; then
-			curl -fsSL -o "${_pf}.new" "$_url" && [[ -s "${_pf}.new" ]] && mv -f "${_pf}.new" "$_pf" && _dl=1
+			if curl -fsSL -o "${_pf}.new" "$_url" && _fun_proxy_socks_new_ok; then
+				mv -f "${_pf}.new" "$_pf" && _dl=1
+			fi
 		fi
 		rm -f "${_pf}.new"
 		if [[ "$_dl" = '1' ]]; then
@@ -1815,6 +1828,10 @@ PY
 				fun_socksoff() {
 					for pidproxy in $(screen -ls | grep ".proxy" | awk {'print $1'}); do
 						screen -r -S "$pidproxy" -X quit
+					done
+					# Asegura que no quede python escuchando (libera puerto para volver a activar [1]).
+					for _k in $(pgrep -f '/etc/SSHPlus/proxy.py' 2>/dev/null); do
+						[[ "$_k" =~ ^[0-9]+$ ]] && kill "$_k" 2>/dev/null || true
 					done
 					[[ $(grep -wc "proxy.py" /etc/autostart) != '0' ]] && {
 						sed -i '/proxy.py/d' /etc/autostart
