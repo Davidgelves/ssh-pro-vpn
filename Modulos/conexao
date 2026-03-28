@@ -1865,7 +1865,6 @@ PY
 				echo -e "\E[44;1;37m          SOCKS SSH — YA ESTÁ ACTIVO           \E[0m"
 				echo ""
 				echo -e "\033[1;32mEl proxy SOCKS SSH sigue en marcha.\033[0m"
-				echo -e "\033[1;37m[0] Volver al menú sin apagar. [1] solo si desea \033[1;31mdesactivar\033[1;37m el servicio.\033[0m"
 				echo ""
 				_cur_pts=$(ps x | grep '[S]SHPlus/proxy.py' 2>/dev/null | head -1 | awk '{print $NF}')
 				[[ "$_cur_pts" =~ ^[0-9]+$ ]] && echo -e "\033[1;33mPuerto SOCKS SSH:\033[1;32m $_cur_pts\033[0m" || echo -e "\033[1;33mSOCKS SSH en ejecución\033[0m"
