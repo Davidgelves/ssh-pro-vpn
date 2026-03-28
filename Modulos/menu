@@ -36,18 +36,8 @@ _sshplus_sync_sshplus_lang
 [[ -f /bin/sshplus_lang ]] && . /bin/sshplus_lang
 # Marco interno 66 columnas. Bordes Unicode (línea continua ┌─┐│). Tras borde izq. van SIEMPRE 2 espacios (igual que el panel).
 _SSHPLUS_IW=66
-# Ancho total del cuadro (bordes verticales + interior); mismo para ┌─┐ ├─┤ │ │ └─┘
-_SSHPLUS_OUTER=$((_SSHPLUS_IW + 2))
-# Centrado horizontal del panel en el terminal (tput cols); si cols < OUTER, pad=0
-_SSHPLUS_FRAME_PAD=0
-_sshplus_compute_frame_pad() {
-	local c
-	c=$(tput cols 2>/dev/null)
-	[[ -z "${c// }" || "$c" -lt 1 ]] && c=80
-	_SSHPLUS_FRAME_PAD=0
-	[[ "$c" -gt ${_SSHPLUS_OUTER} ]] && _SSHPLUS_FRAME_PAD=$(( (c - _SSHPLUS_OUTER) / 2 ))
-}
-_sshplus_frame_pre() { printf '%*s' "${_SSHPLUS_FRAME_PAD:-0}" ''; }
+# Sin relleno horizontal: el panel alineado a la izquierda (no centrado con tput cols).
+_sshplus_frame_pre() { :; }
 # Tras cada fila del marco: EL (CSI K) borra hasta el fin de línea en pantalla → evita "│" sueltos por SGR/anchos raros.
 _sshplus_K=$'\033[K'
 _sshplus_pad24() {
@@ -493,7 +483,6 @@ swap3="${swap3//[[:space:]]/}"
 [[ -z "${swap2// }" ]] && swap2='0B'
 [[ -z "${swap3// }" ]] && swap3='0B'
 clear
-_sshplus_compute_frame_pad
 [[ ! -e /tmp/att ]]  && {
     var01='*'
 } || {
@@ -623,7 +612,6 @@ swap3="${swap3//[[:space:]]/}"
 [[ -z "${swap2// }" ]] && swap2='0B'
 [[ -z "${swap3// }" ]] && swap3='0B'
 clear
-_sshplus_compute_frame_pad
 _sshplus_box_top
 _sshplus_title
 _sshplus_box_sep
