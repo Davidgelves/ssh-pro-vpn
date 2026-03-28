@@ -1512,25 +1512,61 @@ exit 0' >$RCLOCAL
 		fun_conexao
 	}
 
-	# Tras elegir el puerto de escucha WebSocket: menú de destino (mismo criterio que SOCKS python)
+	# Solo servicios TCP en escucha reales (ss/netstat); sin puertos “por defecto” inventados
 	fun_ws_pick_redirect() {
 		local porta_ws="$1"
-		local pypt sshpt v443 v80 pad d left ch manualp
-		pypt=$(netstat -nplt 2>/dev/null | grep -E 'python3|/python' | awk '{print $4}' | cut -d: -f2 | head -1)
-		[[ -z "$pypt" ]] && pypt="8080"
+		local pad d left ch manualp n i pr line
+		local -a _lbl _prt
+		local -A _seenp
+
+		_ws_append() {
+			local L="$1" P="$2"
+			[[ -z "$P" || ! "$P" =~ ^[0-9]+$ ]] && return
+			[[ "$P" == "$porta_ws" ]] && return
+			[[ -n "${_seenp[$P]}" ]] && return
+			_seenp[$P]=1
+			_lbl+=("$L")
+			_prt+=("$P")
+		}
+
+		pr=$(netstat -nplt 2>/dev/null | grep -E 'python3|/python' | awk '{print $4}' | grep -oE '[0-9]+$' | head -1)
+		_ws_append "python3" "$pr"
+
 		if command -v ss >/dev/null 2>&1; then
-			sshpt=$(ss -tlnp 2>/dev/null | awk '/LISTEN/ && $4 ~ /:22$/ { split($4,a,":"); print a[length(a)]; exit }')
-			v443=$(ss -tlnp 2>/dev/null | awk '/LISTEN/ && (/v2ray/ || /xray/) && $4 ~ /:443$/ { split($4,a,":"); print a[length(a)]; exit }')
-			v80=$(ss -tlnp 2>/dev/null | awk '/LISTEN/ && (/v2ray/ || /xray/) && $4 ~ /:80$/ { split($4,a,":"); print a[length(a)]; exit }')
+			while IFS= read -r line; do
+				[[ "$line" != *LISTEN* ]] && continue
+				[[ "$line" != *sshd* ]] && continue
+				pr=$(echo "$line" | awk '{print $4}' | grep -oE '[0-9]+$')
+				_ws_append "sshd" "$pr"
+				break
+			done < <(ss -tlnp 2>/dev/null)
+			while IFS= read -r line; do
+				[[ "$line" != *LISTEN* ]] && continue
+				echo "$line" | grep -qE 'v2ray|xray' || continue
+				pr=$(echo "$line" | awk '{print $4}' | grep -oE '[0-9]+$')
+				_ws_append "v2ray" "$pr"
+			done < <(ss -tlnp 2>/dev/null)
+			while IFS= read -r line; do
+				[[ "$line" != *LISTEN* ]] && continue
+				echo "$line" | grep -qE 'openvpn' || continue
+				pr=$(echo "$line" | awk '{print $4}' | grep -oE '[0-9]+$')
+				_ws_append "openvpn" "$pr"
+				break
+			done < <(ss -tlnp 2>/dev/null)
 		else
-			sshpt=""
-			v443=""
-			v80=""
+			pr=$(netstat -nplt 2>/dev/null | grep sshd | awk '{print $4}' | grep -oE '[0-9]+$' | head -1)
+			_ws_append "sshd" "$pr"
+			while IFS= read -r line; do
+				echo "$line" | grep -qE 'v2ray|xray' || continue
+				pr=$(echo "$line" | awk '{print $4}' | grep -oE '[0-9]+$')
+				_ws_append "v2ray" "$pr"
+			done < <(netstat -nplt 2>/dev/null)
+			pr=$(netstat -nplt 2>/dev/null | grep openvpn | awk '{print $4}' | grep -oE '[0-9]+$' | head -1)
+			_ws_append "openvpn" "$pr"
 		fi
-		[[ -z "$sshpt" ]] && sshpt="22"
-		[[ -z "$v443" ]] && v443="443"
-		[[ -z "$v80" ]] && v80="80"
+
 		WS_REDIR_PORT=""
+		n=${#_prt[@]}
 		while true; do
 			clear
 			echo -e "\033[1;33m════════════════════════════════════════════\033[0m"
@@ -1540,26 +1576,18 @@ exit 0' >$RCLOCAL
 			echo -e "\033[1;31m────────────────────────────────────────────\033[0m"
 			echo -e "\033[1;33m   ¿A QUÉ PUERTO REDIRIGIR EL TRÁFICO?\033[0m"
 			echo -e "\033[1;31m────────────────────────────────────────────\033[0m"
-			left="[1] > python3 "
-			pad=$(( 52 - ${#left} - ${#pypt} ))
-			(( pad < 2 )) && pad=2
-			d=$(printf '%*s' "$pad" '' | tr ' ' '.')
-			echo -e "\033[1;32m[1]\033[1;31m > \033[1;37mpython3 \033[1;33m${d}\033[1;32m${pypt}\033[0m"
-			left="[2] > sshd "
-			pad=$(( 52 - ${#left} - ${#sshpt} ))
-			(( pad < 2 )) && pad=2
-			d=$(printf '%*s' "$pad" '' | tr ' ' '.')
-			echo -e "\033[1;32m[2]\033[1;31m > \033[1;37msshd \033[1;33m${d}\033[1;32m${sshpt}\033[0m"
-			left="[3] > v2ray "
-			pad=$(( 52 - ${#left} - ${#v443} ))
-			(( pad < 2 )) && pad=2
-			d=$(printf '%*s' "$pad" '' | tr ' ' '.')
-			echo -e "\033[1;32m[3]\033[1;31m > \033[1;37mv2ray \033[1;33m${d}\033[1;32m${v443}\033[0m"
-			left="[4] > v2ray "
-			pad=$(( 52 - ${#left} - ${#v80} ))
-			(( pad < 2 )) && pad=2
-			d=$(printf '%*s' "$pad" '' | tr ' ' '.')
-			echo -e "\033[1;32m[4]\033[1;31m > \033[1;37mv2ray \033[1;33m${d}\033[1;32m${v80}\033[0m"
+			if [[ "$n" -eq 0 ]]; then
+				echo -e "\033[1;33m  (No se detectaron listeners: python3, sshd, v2ray/xray, openvpn)\033[0m"
+				echo -e "\033[1;33m  Use [5] para escribir el puerto destino (127.0.0.1).\033[0m"
+			else
+				for ((i = 0; i < n; i++)); do
+					left="[$((i + 1))] > ${_lbl[i]} "
+					pad=$((52 - ${#left} - ${#_prt[i]}))
+					((pad < 2)) && pad=2
+					d=$(printf '%*s' "$pad" '' | tr ' ' '.')
+					echo -e "\033[1;32m[$((i + 1))]\033[1;31m > \033[1;37m${_lbl[i]} \033[1;33m${d}\033[1;32m${_prt[i]}\033[0m"
+				done
+			fi
 			echo -e "\033[1;31m════════════════════════════════════════════\033[0m"
 			echo -e "\033[1;32m[0]\033[1;37m\E[41;1;37m CANCELAR \E[0m    \033[1;32m[5]\033[1;37m\E[41;1;37m INGRESAR MANUALMENTE \E[0m"
 			echo -e "\033[1;31m════════════════════════════════════════════\033[0m"
@@ -1568,10 +1596,6 @@ exit 0' >$RCLOCAL
 			read ch
 			case "$ch" in
 				0) return 1 ;;
-				1) WS_REDIR_PORT="$pypt"; break ;;
-				2) WS_REDIR_PORT="$sshpt"; break ;;
-				3) WS_REDIR_PORT="$v443"; break ;;
-				4) WS_REDIR_PORT="$v80"; break ;;
 				5)
 					echo -ne "\033[1;32mPuerto destino (127.0.0.1): \033[1;37m"
 					read manualp
@@ -1585,6 +1609,10 @@ exit 0' >$RCLOCAL
 					break
 					;;
 				*)
+					if [[ "$ch" =~ ^[0-9]+$ ]] && [[ "$ch" -ge 1 && "$ch" -le "$n" ]]; then
+						WS_REDIR_PORT="${_prt[$((ch - 1))]}"
+						break
+					fi
 					echo -e "\033[1;33mOpcion invalida\033[0m"
 					sleep 1
 					;;
