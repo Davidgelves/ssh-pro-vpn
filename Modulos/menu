@@ -57,10 +57,8 @@ _sshplus_line() { local s; s=$(_sshplus_pad66 "$1"); printf '\033[1;31m║\033[0
 _sshplus_line_g() { local s; s=$(_sshplus_pad66 "$1"); printf '\033[1;31m║\033[0m\033[1;32m%s\033[0m\033[1;31m║\033[0m\n' "$s"; }
 _sshplus_line_c() { local s; s=$(_sshplus_pad66 "$1"); printf '\033[1;31m║\033[0m\033[1;36m%s\033[0m\033[1;31m║\033[0m\n' "$s"; }
 _sshplus_title() {
-	local s=" SSH-PLUS · ssh-pro-vpn · J DAVID AG "
-	s="${s:0:66}"
-	while [[ ${#s} -lt 66 ]]; do s+=' '; done
-	printf '\033[1;31m║\033[0m\033[1;34;47m%s\033[0m\033[1;31m║\033[0m\n' "$s"
+	local t="SSH-PRO" w=${#t} l=$(( (_SSHPLUS_IW - w) / 2 )) r=$(( _SSHPLUS_IW - w - l ))
+	printf '\033[1;31m║\033[0m\033[1;34;47m%*s%s%*s\033[0m\033[1;31m║\033[0m\n' "$l" '' "$t" "$r" ''
 }
 # Panel tipo tabla (3 columnas, ancho total alineado con _SSHPLUS_IW)
 _sshplus_draw_sys_dashboard() {
