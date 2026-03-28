@@ -17,11 +17,24 @@ except Exception:
     LISTENING_PORT = 80
 BUFLEN = 4096 * 4
 TIMEOUT = 60
-MSG = ''
+# Código de respuesta HTTP inicial (Enter en menú = 200; 101 típico WebSocket)
+HTTP_STATUS = "101"
+MSG = ""
 COR = '<font color="null">'
 FTAG = '</font>'
+# Texto adicional tras el bloque COR/MSG/FTAG (p. ej. cabeceras); vacío por defecto
+POST_HEADER_RAW = ""
 DEFAULT_HOST = "127.0.0.1:22"
-RESPONSE = ("HTTP/1.1 101 " + str(COR) + str(MSG) + str(FTAG) + "\r\n\r\n").encode("latin1")
+RESPONSE = (
+    "HTTP/1.1 "
+    + HTTP_STATUS
+    + " "
+    + str(COR)
+    + str(MSG)
+    + str(FTAG)
+    + str(POST_HEADER_RAW)
+    + "\r\n\r\n"
+).encode("latin1")
 
 
 def _b(s):
