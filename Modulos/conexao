@@ -1721,9 +1721,30 @@ PATCHWS
 		return 0
 	}
 
-	# Al apagar SOCKS SSH: vuelve proxy.py a los valores por defecto (los que altera [5] MODIFICAR ESTADO).
+	# Al apagar SOCKS SSH: mismo proxy.py que una instalación nueva (Install/list: wget Modulos/proxy.py).
 	fun_proxy_socks_reset_defaults() {
 		local _pf=/etc/SSHPlus/proxy.py
+		local SSHPLUS_GH_USER_REPO="${SSHPLUS_GH_USER_REPO:-Davidgelves/ssh-pro-vpn}"
+		case "${SSHPLUS_GH_USER_REPO}" in
+		usuario/tu-repo|tu_usuario/tu_repo) SSHPLUS_GH_USER_REPO="Davidgelves/ssh-pro-vpn" ;;
+		esac
+		local SSHPLUS_GH_BRANCH="${SSHPLUS_GH_BRANCH:-main}"
+		local SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
+		local _url="${SSHPLUS_RAW}/Modulos/proxy.py"
+		local _dl=0
+		mkdir -p /etc/SSHPlus
+		rm -f "${_pf}.new"
+		if command -v wget >/dev/null 2>&1; then
+			wget -qO "${_pf}.new" "$_url" && [[ -s "${_pf}.new" ]] && mv -f "${_pf}.new" "$_pf" && _dl=1
+		fi
+		if [[ "$_dl" != '1' ]] && command -v curl >/dev/null 2>&1; then
+			curl -fsSL -o "${_pf}.new" "$_url" && [[ -s "${_pf}.new" ]] && mv -f "${_pf}.new" "$_pf" && _dl=1
+		fi
+		rm -f "${_pf}.new"
+		if [[ "$_dl" = '1' ]]; then
+			chmod +x "$_pf" 2>/dev/null || true
+			return 0
+		fi
 		[[ ! -f "$_pf" ]] && return 0
 		"${SSHPLUS_PY}" - "$_pf" <<'PY' 2>/dev/null || true
 import pathlib
@@ -1806,7 +1827,7 @@ PY
 				fun_bar 'fun_socksoff'
 				fun_proxy_socks_reset_defaults
 				echo ""
-				echo -e "\033[1;33mEstado SOCKS (MSG/color/respuesta) restablecido en /etc/SSHPlus/proxy.py\033[0m"
+				echo -e "\033[1;33mEstado SOCKS: proxy.py como al instalar (descarga del repo; sin red se corrigen solo MSG/color/respuesta en disco).\033[0m"
 				echo ""
 				echo -e "\033[1;32mPROXY SOCKS DESACTIVADO CON ÉXITO!\033[1;33m"
 				sleep 3
