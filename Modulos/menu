@@ -606,19 +606,19 @@ _sshplus_title
 _sshplus_box_sep
 _sshplus_draw_sys_dashboard
 _sshplus_box_sep
-_sshplus_pair "01" "${L_M01:-CREAR USUARIO}" "12" "${L_M12:-SPEEDTEST}"
-_sshplus_pair "02" "${L_M02:-CREAR PRUEBA}" "13" "${L_M13:-BANNER}"
-_sshplus_pair "03" "${L_M03:-ELIMINAR USUARIO}" "14" "${L_M14:-TRAFICO}"
-_sshplus_pair "04" "${L_M04:-MONITOR ONLINE}" "15" "${L_M15:-OPTIMIZAR}"
-_sshplus_pair "05" "${L_M05:-CAMBIAR FECHA}" "16" "${L_M16:-RESPALDO}"
-_sshplus_pair "06" "${L_M06:-CAMBIAR LIMITE}" "17" "${L_M17:-HERRAMIENTAS}"
-_sshplus_pair "07" "${L_M07:-CAMBIAR CLAVE}" "18" "${L_M18:-LIMITER} ${stsl}"
-_sshplus_pair "08" "${L_M08:-ELIMINAR CADUCADOS}" "19" "${L_M19:-Menu BadVpn} ${stsu}"
-_sshplus_pair "09" "${L_M09:-INFORME DE USUARIOS}" "20" "${L_M20:-FIREWALL (PRO)}"
-_sshplus_pair "10" "${L_M10:-MODO DE CONEXION}" "21" "${L_M21:-INFO VPS} >>"
-_sshplus_pair "11" "${L_M11:-CREAR MEMORIA SWAP}" "22" "${L_M22:-CHECKUSER 4G}"
-# 01-24 sin repetir: poner [12] debajo de [11] y [23] debajo de [22] en otra fila duplica el 12 o rompe la columna derecha.
-_sshplus_pair "23" "${L_MG:-CHECKUSER GLTUNNEL}" "24" "${L_M23:-MAS >>>}"
+# Columna izq. [01]-[12], columna der. [13]-[24] (misma fila: n | n+12)
+_sshplus_pair "01" "${L_M01:-CREAR USUARIO}" "13" "${L_M13:-BANNER}"
+_sshplus_pair "02" "${L_M02:-CREAR PRUEBA}" "14" "${L_M14:-TRAFICO}"
+_sshplus_pair "03" "${L_M03:-ELIMINAR USUARIO}" "15" "${L_M15:-OPTIMIZAR}"
+_sshplus_pair "04" "${L_M04:-MONITOR ONLINE}" "16" "${L_M16:-RESPALDO}"
+_sshplus_pair "05" "${L_M05:-CAMBIAR FECHA}" "17" "${L_M17:-HERRAMIENTAS}"
+_sshplus_pair "06" "${L_M06:-CAMBIAR LIMITE}" "18" "${L_M18:-LIMITER} ${stsl}"
+_sshplus_pair "07" "${L_M07:-CAMBIAR CLAVE}" "19" "${L_M19:-Menu BadVpn} ${stsu}"
+_sshplus_pair "08" "${L_M08:-ELIMINAR CADUCADOS}" "20" "${L_M20:-FIREWALL (PRO)}"
+_sshplus_pair "09" "${L_M09:-INFORME DE USUARIOS}" "21" "${L_M21:-INFO VPS}"
+_sshplus_pair "10" "${L_M10:-MODO DE CONEXION}" "22" "${L_M22:-CHECKUSER 4G}"
+_sshplus_pair "11" "${L_M11:-CREAR MEMORIA SWAP}" "23" "${L_MG:-CHECKUSER GLTUNNEL}"
+_sshplus_pair "12" "${L_M12:-SPEEDTEST}" "24" "${L_M23:-MAS >>>}"
 _sshplus_box_bot
 _sshplus_prompt; read x
 
