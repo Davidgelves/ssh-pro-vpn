@@ -1845,9 +1845,9 @@ PY
 		} || {
 			sks='\033[1;31mOFF'
 		}
-		pgrep -f '/etc/SSHPlus/proxy.py' >/dev/null 2>&1 && var_sks1="\033[1;32m◉" || var_sks1="\033[1;31m○"
-		[[ $(screen -list | grep -wc 'ws') != '0' ]] && var_sks2="\033[1;32m◉" || var_sks2="\033[1;31m○"
-		[[ $(screen -list | grep -wc 'openpy') != '0' ]] && sksop="\033[1;32m◉" || sksop="\033[1;31m○"
+		pgrep -f '/etc/SSHPlus/proxy.py' >/dev/null 2>&1 && var_sks1="\033[1;32m●\033[0m" || var_sks1="\033[1;31m○\033[0m"
+		[[ $(screen -list | grep -wc 'ws') != '0' ]] && var_sks2="\033[1;32m●\033[0m" || var_sks2="\033[1;31m○\033[0m"
+		[[ $(screen -list | grep -wc 'openpy') != '0' ]] && sksop="\033[1;32m●\033[0m" || sksop="\033[1;31m○\033[0m"
 		echo ""
 		printf '%b\n' \
 			"\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mSOCKS SSH ${var_sks1}\033[0m" \
