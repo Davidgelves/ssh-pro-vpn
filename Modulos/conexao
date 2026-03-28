@@ -1721,6 +1721,47 @@ PATCHWS
 		return 0
 	}
 
+	# Al apagar SOCKS SSH: vuelve proxy.py a los valores por defecto (los que altera [5] MODIFICAR ESTADO).
+	fun_proxy_socks_reset_defaults() {
+		local _pf=/etc/SSHPlus/proxy.py
+		[[ ! -f "$_pf" ]] && return 0
+		"${SSHPLUS_PY}" - "$_pf" <<'PY' 2>/dev/null || true
+import pathlib
+import re
+import sys
+
+path = pathlib.Path(sys.argv[1])
+if not path.is_file():
+    sys.exit(0)
+text = path.read_text(encoding="utf-8", errors="replace")
+
+def rep_line(t, name, rhs):
+    pat = r"^" + re.escape(name) + r" = .*$"
+    if not re.search(pat, t, flags=re.MULTILINE):
+        return t
+    return re.sub(pat, name + " = " + rhs, t, count=1, flags=re.MULTILINE)
+
+text = rep_line(text, "MSG", '""')
+text = rep_line(text, "COR", "'<font color=\"null\">'")
+text = rep_line(text, "FTAG", '"</font>"')
+text = rep_line(text, "DEFAULT_HOST", '"0.0.0.0:22"')
+resp = (
+    "RESPONSE = (\n"
+    '    b"HTTP/1.1 200 OK\\r\\n"\n'
+    '    b"Content-Length: 0\\r\\n"\n'
+    '    b"\\r\\n"\n'
+    '    b"HTTP/1.1 200 Connection Established\\r\\n"\n'
+    '    b"\\r\\n"\n'
+    ")\n"
+)
+if re.search(r"^RESPONSE = \(", text, flags=re.MULTILINE):
+    text = re.sub(r"^RESPONSE = \(.*?\n\)\s*", resp, text, count=1, flags=re.MULTILINE | re.DOTALL)
+elif re.search(r"^RESPONSE = ", text, flags=re.MULTILINE):
+    text = re.sub(r"^RESPONSE = .*$", resp.rstrip("\n"), text, count=1, flags=re.MULTILINE)
+path.write_text(text, encoding="utf-8")
+PY
+	}
+
 	fun_socks() {
 		clear
 		echo -e "\E[44;1;37m            GERENCIAR PROXY SOCKS             \E[0m"
@@ -1763,6 +1804,9 @@ PATCHWS
 				echo -e "\033[1;32mDESATIVANDO O PROXY SOCKS\033[1;33m"
 				echo ""
 				fun_bar 'fun_socksoff'
+				fun_proxy_socks_reset_defaults
+				echo ""
+				echo -e "\033[1;33mEstado SOCKS (MSG/color/respuesta) restablecido en /etc/SSHPlus/proxy.py\033[0m"
 				echo ""
 				echo -e "\033[1;32mPROXY SOCKS DESACTIVADO CON ÉXITO!\033[1;33m"
 				sleep 3
