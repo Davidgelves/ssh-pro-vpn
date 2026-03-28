@@ -25,16 +25,38 @@ FTAG = '</font>'
 # Texto adicional tras el bloque COR/MSG/FTAG (p. ej. cabeceras); vacío por defecto
 POST_HEADER_RAW = ""
 DEFAULT_HOST = "127.0.0.1:22"
-RESPONSE = (
-    "HTTP/1.1 "
-    + HTTP_STATUS
-    + " "
-    + str(COR)
-    + str(MSG)
-    + str(FTAG)
-    + str(POST_HEADER_RAW)
-    + "\r\n\r\n"
-).encode("latin1")
+
+
+def _compose_initial_response():
+    """Primera respuesta al túnel. 101 debe ser RFC-compatible; mezclar COR/MSG en la línea de estado rompe chequeadores."""
+    st = str(HTTP_STATUS).strip()
+    post = str(POST_HEADER_RAW)
+    if st == "101":
+        out = (
+            "HTTP/1.1 101 Switching Protocols\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+        )
+        if post:
+            p = post.replace("\n", "\r\n")
+            if not p.endswith("\r\n"):
+                p += "\r\n"
+            out += p
+        out += "\r\n"
+        return out.encode("latin1")
+    return (
+        "HTTP/1.1 "
+        + str(HTTP_STATUS)
+        + " "
+        + str(COR)
+        + str(MSG)
+        + str(FTAG)
+        + post
+        + "\r\n\r\n"
+    ).encode("latin1")
+
+
+RESPONSE = _compose_initial_response()
 
 
 def _b(s):
