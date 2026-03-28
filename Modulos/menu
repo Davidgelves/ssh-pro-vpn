@@ -69,20 +69,41 @@ _sshplus_cell20() {
 	while [[ ${#s} -lt 20 ]]; do s+=' '; done
 	printf '%s' "$s"
 }
+# Panel dato 20 col: ·etiqueta: valor (etiqueta verde, valor blanco, espacio tras :)
+_sshplus_kv_cell20() {
+	local lab="$1" val="$2" pre fmt pl vis pref rest
+	printf -v pre '·%s: ' "$lab"
+	printf -v fmt '·%s: %s' "$lab" "$val"
+	pl=${#pre}
+	if [[ $pl -gt 20 ]]; then
+		vis="${fmt:0:20}"
+		printf '\033[1;32m%s\033[0m' "$vis"
+		return
+	fi
+	vis="${fmt:0:20}"
+	while [[ ${#vis} -lt 20 ]]; do vis+=' '; done
+	vis="${vis:0:20}"
+	pref="${vis:0:pl}"
+	rest="${vis:pl}"
+	printf '\033[1;32m%s\033[0m\033[1;37m%s\033[0m' "$pref" "$rest"
+}
 _sshplus_draw_sys_dashboard() {
 	local sw a b c
 	a=$(_sshplus_cell20 "${L_SISTEMA:-SISTEMA}")
 	b=$(_sshplus_cell20 "${L_MEM_RAM:-MEMORIA RAM}")
 	c=$(_sshplus_cell20 "${L_PROCESSADOR:-PROCESADOR}")
 	printf '\033[1;31m│\033[0m  \033[1;32m%s\033[0m·\033[1;32m%s\033[0m·\033[1;32m%s\033[0m  \033[1;31m│\033[0m%s\n' "$a" "$b" "$c" "$_sshplus_K"
-	a=$(_sshplus_cell20 "OS:${_system}")
-	b=$(_sshplus_cell20 "Total:${_ram}")
-	c=$(_sshplus_cell20 "${L_NUCLEOS:-Nuc}:${_core}")
-	printf '\033[1;31m│\033[0m  \033[1;37m%s\033[0m·\033[1;37m%s\033[0m·\033[1;37m%s\033[0m  \033[1;31m│\033[0m%s\n' "$a" "$b" "$c" "$_sshplus_K"
-	a=$(_sshplus_cell20 "${L_HORA:-Hora}:${_hora}")
-	b=$(_sshplus_cell20 "RAM:${_usor}")
-	c=$(_sshplus_cell20 "CPU:${_usop}")
-	printf '\033[1;31m│\033[0m  \033[1;37m%s\033[0m·\033[1;37m%s\033[0m·\033[1;37m%s\033[0m  \033[1;31m│\033[0m%s\n' "$a" "$b" "$c" "$_sshplus_K"
+	# 2+20+1+20+1+20+2=66 (espacio entre celdas sustituye al · que llevaba cada separador)
+	printf '\033[1;31m│\033[0m  %s %s %s  \033[1;31m│\033[0m%s\n' \
+		"$(_sshplus_kv_cell20 'OS' "$_system")" \
+		"$(_sshplus_kv_cell20 "${L_TOTAL:-Total}" "$_ram")" \
+		"$(_sshplus_kv_cell20 "${L_NUCLEOS:-Nucleos}" "$_core")" \
+		"$_sshplus_K"
+	printf '\033[1;31m│\033[0m  %s %s %s  \033[1;31m│\033[0m%s\n' \
+		"$(_sshplus_kv_cell20 "${L_HORA:-Hora}" "$_hora")" \
+		"$(_sshplus_kv_cell20 'RAM' "$_usor")" \
+		"$(_sshplus_kv_cell20 'CPU' "$_usop")" \
+		"$_sshplus_K"
 	_sshplus_box_sep
 	if [[ ! -e /tmp/att ]]; then
 		a=$(_sshplus_cell20 "${L_ONLINES:-Conectados}")
