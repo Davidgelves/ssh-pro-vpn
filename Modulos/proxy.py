@@ -22,8 +22,15 @@ MSG = ""
 COR = '<font color="null">'
 FTAG = "</font>"
 DEFAULT_HOST = "0.0.0.0:22"
-# Respuesta CONNECT que suelen esperar los clientes / inyectores HTTP
-RESPONSE = b"HTTP/1.1 200 Connection Established\r\n\r\n"
+# Inyectores tipo HTTP Custom / Style suelen registrar primero "200 OK" y luego "Connection Established"
+# (a veces en saltos distintos); enviar ambas respuestas mínimas antes del túnel TCP ayuda a esos clientes.
+RESPONSE = (
+    b"HTTP/1.1 200 OK\r\n"
+    b"Content-Length: 0\r\n"
+    b"\r\n"
+    b"HTTP/1.1 200 Connection Established\r\n"
+    b"\r\n"
+)
  
 class Server(threading.Thread):
     def __init__(self, host, port):
