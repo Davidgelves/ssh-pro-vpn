@@ -706,7 +706,7 @@ case "$x" in
    ;;
    14)
    clear
-   echo -e "\033[1;32mPARA SAIR CLICK CTRL + C\033[1;36m"
+   echo -e "\033[1;32mPARA SALIR PULSE CTRL + C\033[1;36m"
    sleep 4
    nload
    ;;

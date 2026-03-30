@@ -30,7 +30,7 @@ tput cnorm
 fun_udp1 () {
     [[ -e "/bin/badvpn-udpgw" ]] && {
     clear
-    echo -e "\033[1;32mINICIANDO O BADVPN... \033[0m\n"
+    echo -e "\033[1;32mINICIANDO EL BADVPN... \033[0m\n"
     fun_udpon () {
         screen -dmS udpvpn /bin/antcrashvpn.sh
         [[ $(grep -wc "udpvpn" /etc/autostart) = '0' ]] && {
@@ -59,7 +59,7 @@ fun_udp1 () {
             chmod 777 /bin/badvpn-udpgw
 	   }
 	   fun_bar 'inst_udp'
-	   echo -e "\n\033[1;32mINICIANDO O BADVPN... \033[0m\n"
+	   echo -e "\n\033[1;32mINICIANDO EL BADVPN... \033[0m\n"
        fun_udpon2 () {
            screen -dmS udpvpn /bin/antcrashvpn.sh
            [[ $(grep -wc "udpvpn" /etc/autostart) = '0' ]] && {
