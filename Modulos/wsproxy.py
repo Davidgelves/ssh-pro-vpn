@@ -28,32 +28,58 @@ DEFAULT_HOST = "127.0.0.1:22"
 
 
 def _compose_initial_response():
-    """Primera respuesta al túnel. 101 debe ser RFC-compatible; mezclar COR/MSG en la línea de estado rompe chequeadores."""
+    """Primera respuesta al túnel con formato HTTP estándar para máxima compatibilidad."""
     st = str(HTTP_STATUS).strip()
-    post = str(POST_HEADER_RAW)
+    post = str(POST_HEADER_RAW or "")
+    reason_map = {
+        "100": "Continue",
+        "101": "Switching Protocols",
+        "200": "OK",
+        "201": "Created",
+        "204": "No Content",
+        "300": "Multiple Choices",
+        "301": "Moved Permanently",
+        "302": "Found",
+        "400": "Bad Request",
+        "401": "Unauthorized",
+        "403": "Forbidden",
+        "404": "Not Found",
+        "500": "Internal Server Error",
+        "502": "Bad Gateway",
+        "503": "Service Unavailable",
+    }
+    reason = reason_map.get(st, "OK")
+
+    def _norm_headers(raw):
+        if not raw:
+            return ""
+        h = raw.replace("\r\n", "\n").replace("\r", "\n").strip("\n")
+        if not h:
+            return ""
+        return h.replace("\n", "\r\n")
+
+    p = _norm_headers(post)
     if st == "101":
         out = (
             "HTTP/1.1 101 Switching Protocols\r\n"
             "Upgrade: websocket\r\n"
             "Connection: Upgrade\r\n"
         )
-        if post:
-            p = post.replace("\n", "\r\n")
-            if not p.endswith("\r\n"):
-                p += "\r\n"
-            out += p
+        if p:
+            out += p + "\r\n"
         out += "\r\n"
         return out.encode("latin1")
-    return (
-        "HTTP/1.1 "
-        + str(HTTP_STATUS)
-        + " "
-        + str(COR)
-        + str(MSG)
-        + str(FTAG)
-        + post
-        + "\r\n\r\n"
-    ).encode("latin1")
+
+    # Para otros códigos, mantenemos el minibanner como cuerpo HTML y la línea de estado RFC.
+    body = (str(COR) + str(MSG) + str(FTAG)).encode("latin1", errors="replace")
+    out = f"HTTP/1.1 {st} {reason}\r\n"
+    out += "Content-Type: text/html; charset=latin1\r\n"
+    out += f"Content-Length: {len(body)}\r\n"
+    out += "Connection: keep-alive\r\n"
+    if p:
+        out += p + "\r\n"
+    out += "\r\n"
+    return out.encode("latin1") + body
 
 
 RESPONSE = _compose_initial_response()
