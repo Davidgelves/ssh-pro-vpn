@@ -1854,18 +1854,42 @@ PY
 
 	# Estado tipo "python.<puerto> ●/○" (SOCKS SSH vs WEBSOCKET).
 	fun_servicios_python_status() {
-		local _opc _sel _unit _units _idx
+		local _opc _sel _unit _units _idx _sp _wp _tmp _exists _src _pid _state _port
 		while true; do
 			_units=()
+			_src=()
+
+			# 1) Servicios systemd python.<puerto>.service
 			while IFS= read -r _unit; do
-				[[ -n "$_unit" ]] && _units+=("$_unit")
+				if [[ -n "$_unit" ]]; then
+					_units+=("$_unit")
+					_src+=("systemd")
+				fi
 			done < <(systemctl list-unit-files --type=service --no-pager 2>/dev/null | awk '/^python\.[0-9]+\.service/ {sub(/\.service$/, "", $1); print $1}')
+
+			# 2) Procesos activos de SSHPlus (aunque no exista unidad systemd)
+			_sp=$(ps x 2>/dev/null | grep '[S]SHPlus/proxy.py' | head -1 | awk '{print $NF}')
+			_wp=$(ps x 2>/dev/null | grep '[S]SHPlus/wsproxy.py' | head -1 | awk '{print $NF}')
+			for _tmp in "$_sp" "$_wp"; do
+				if [[ "$_tmp" =~ ^[0-9]+$ ]]; then
+					_unit="python.${_tmp}"
+					_exists="0"
+					for _idx in "${!_units[@]}"; do
+						[[ "${_units[$_idx]}" = "$_unit" ]] && { _exists="1"; break; }
+					done
+					if [[ "$_exists" = "0" ]]; then
+						_units+=("$_unit")
+						_src+=("proceso")
+					fi
+				fi
+			done
+
 			clear
 			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
 			echo -e "\033[1;33m   ADMINISTRACION DE SERVICIOS PYTHON\033[0m"
 			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
 			if [[ ${#_units[@]} -eq 0 ]]; then
-				echo -e "   \033[1;31mNo hay servicios python.<puerto>.service\033[0m"
+				echo -e "   \033[1;31mNo hay servicios/procesos python detectados\033[0m"
 				echo ""
 				echo -e "   \033[1;32m[0]\033[1;31m>\033[1;33m VOLVER\033[0m"
 				echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
@@ -1876,7 +1900,7 @@ PY
 			fi
 			_idx=1
 			for _unit in "${_units[@]}"; do
-				echo -e "   \033[1;32m[${_idx}]\033[1;31m>\033[1;37m ${_unit}\033[0m"
+				echo -e "   \033[1;32m[${_idx}]\033[1;31m>\033[1;37m ${_unit}\033[1;33m (${_src[$((_idx-1))]})\033[0m"
 				_idx=$((_idx + 1))
 			done
 			echo ""
@@ -1902,7 +1926,23 @@ PY
 			echo -e "\033[1;33m        Estado del servicio ${_unit}\033[0m"
 			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
 			echo ""
-			systemctl status "${_unit}.service" --no-pager 2>/dev/null
+			if [[ "${_src[$_sel]}" = "systemd" ]]; then
+				systemctl status "${_unit}.service" --no-pager 2>/dev/null
+			else
+				_port="${_unit#python.}"
+				_pid="$(pgrep -f "/etc/SSHPlus/proxy.py ${_port}" 2>/dev/null | head -1)"
+				[[ -z "$_pid" ]] && _pid="$(pgrep -f "/etc/SSHPlus/wsproxy.py ${_port}" 2>/dev/null | head -1)"
+				if [[ -z "$_pid" ]]; then
+					_pid="$(lsof -tiTCP:${_port} -sTCP:LISTEN 2>/dev/null | head -1)"
+				fi
+				[[ -n "$_pid" ]] && _state="\033[1;32mactivo\033[0m" || _state="\033[1;31minactivo\033[0m"
+				echo -e "Unidad systemd: \033[1;33m(no encontrada)\033[0m"
+				echo -e "Estado proceso: ${_state}"
+				echo -e "Puerto: \033[1;37m${_port}\033[0m"
+				[[ -n "$_pid" ]] && echo -e "PID: \033[1;37m${_pid}\033[0m"
+				echo ""
+				netstat -nplt 2>/dev/null | awk -v p=":${_port}" '$4 ~ p {print}'
+			fi
 			echo ""
 			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
 			echo -ne "\033[1;33m>> Presione enter para continuar <<\033[0m"; read
