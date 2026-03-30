@@ -24,6 +24,24 @@ COR = '<font color="null">'
 FTAG = "</font>"
 DEFAULT_HOST = "0.0.0.0:22"
 LOG_FILE = "/var/log/sshplus-proxy.log"
+
+
+def _init_log_file():
+    """Crea el archivo de log al cargar el módulo; si /var/log falla, usa /tmp."""
+    global LOG_FILE
+    for candidate in ("/var/log/sshplus-proxy.log", "/tmp/sshplus-proxy.log"):
+        try:
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(candidate, "a", encoding="utf-8") as f:
+                f.write(f"[{ts}] proxy SOCKS: registro iniciado\n")
+            LOG_FILE = candidate
+            return
+        except Exception:
+            continue
+    LOG_FILE = None
+
+
+_init_log_file()
 # Inyectores tipo HTTP Custom / Style suelen registrar primero "200 OK" y luego "Connection Established"
 # (a veces en saltos distintos); enviar ambas respuestas mínimas antes del túnel TCP ayuda a esos clientes.
 RESPONSE = (
@@ -98,6 +116,8 @@ class Server(threading.Thread):
         self.logLock.acquire()
         try:
             print(log)
+            if LOG_FILE is None:
+                return
             try:
                 ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 with open(LOG_FILE, "a", encoding="utf-8") as f:
