@@ -79,11 +79,10 @@ if [[ -n "${_lvk:-}" ]]; then
 fi
 echo "[OK] Modulos actualizados en /bin (repo ${SSHPLUS_GH_USER_REPO} @ ${SSHPLUS_GH_BRANCH})."
 if [[ -f /bin/conexao ]]; then
-	if grep -q 'ESTADO DE SERVICIOS' /bin/conexao 2>/dev/null; then
-		echo "[OK] /bin/conexao contiene la opción [7] ESTADO DE SERVICIOS."
+	if grep -q 'fun_socks' /bin/conexao 2>/dev/null; then
+		echo "[OK] /bin/conexao descargado (menú proxy SOCKS presente)."
 	else
-		echo "[!] /bin/conexao no muestra la marca reciente (¿repo/rama distinta?). Comprueba:"
-		echo "    grep ESTADO /bin/conexao | head -1"
+		echo "[!] /bin/conexao parece incompleto (¿repo/rama distinta?). Comprueba: grep fun_socks /bin/conexao"
 	fi
 	ls -la /bin/conexao 2>/dev/null || true
 fi

@@ -1852,145 +1852,6 @@ path.write_text(text, encoding="utf-8")
 PY
 	}
 
-	# Puerto en escucha de un PID (proxy/wsproxy en screen puede no verse bien con ps|awk).
-	_sshplus_listen_port() {
-		local _pid="$1" _p
-		[[ -z "$_pid" ]] && return 1
-		if [[ -r "/proc/${_pid}/cmdline" ]]; then
-			_p=$(tr '\0' ' ' <"/proc/${_pid}/cmdline" | awk '{print $NF}')
-			if [[ "$_p" =~ ^[0-9]+$ ]]; then
-				echo "$_p"
-				return 0
-			fi
-		fi
-		if command -v lsof >/dev/null 2>&1; then
-			_p=$(lsof -nP -iTCP -sTCP:LISTEN -p "$_pid" 2>/dev/null | awk 'NR==2 {split($9,a,":"); print a[length(a)]; exit}')
-			[[ "$_p" =~ ^[0-9]+$ ]] && {
-				echo "$_p"
-				return 0
-			}
-		fi
-		_p=$(ss -lntp 2>/dev/null | grep "pid=${_pid}," | head -1)
-		_p=$(echo "$_p" | grep -oE ':[0-9]+' | tail -1 | tr -d ':')
-		[[ "$_p" =~ ^[0-9]+$ ]] && {
-			echo "$_p"
-			return 0
-		}
-		if command -v netstat >/dev/null 2>&1; then
-			_p=$(netstat -lntp 2>/dev/null | awk -v p="${_pid}" '$7 ~ "^"p"/" {print $4}' | head -1 | awk -F: '{print $NF}')
-			[[ "$_p" =~ ^[0-9]+$ ]] && {
-				echo "$_p"
-				return 0
-			}
-		fi
-		return 1
-	}
-
-	# Estado tipo "python.<puerto> ●/○" (SOCKS SSH vs WEBSOCKET).
-	fun_servicios_python_status() {
-		local _opc _sel _unit _units _idx _scr _exists _src _pid _state _port _j
-		while true; do
-			_units=()
-			_src=()
-
-			# 1) Servicios systemd python.<puerto>.service
-			while IFS= read -r _unit; do
-				if [[ -n "$_unit" ]]; then
-					_units+=("$_unit")
-					_src+=("systemd")
-				fi
-			done < <(systemctl list-unit-files --type=service --no-pager 2>/dev/null | awk '/^python\.[0-9]+\.service/ {sub(/\.service$/, "", $1); print $1}')
-
-			# 2) Procesos /etc/SSHPlus/proxy.py y wsproxy.py (puerto desde /proc, lsof o ss)
-			for _scr in "proxy.py" "wsproxy.py"; do
-				_pid=$(pgrep -f "/etc/SSHPlus/${_scr}" 2>/dev/null | head -1)
-				[[ -z "$_pid" ]] && continue
-				_port=$(_sshplus_listen_port "$_pid")
-				[[ -z "$_port" || ! "$_port" =~ ^[0-9]+$ ]] && continue
-				_unit="python.${_port}"
-				_exists="0"
-				for _j in "${!_units[@]}"; do
-					[[ "${_units[$_j]}" = "$_unit" ]] && {
-						_exists="1"
-						break
-					}
-				done
-				[[ "$_exists" = "0" ]] && {
-					_units+=("$_unit")
-					_src+=("proceso")
-				}
-			done
-
-			clear
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			echo -e "\033[1;33m   ADMINISTRACION DE SERVICIOS PYTHON\033[0m"
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			if [[ ${#_units[@]} -eq 0 ]]; then
-				echo -e "   \033[1;31mNo hay servicios/procesos python detectados\033[0m"
-				(pgrep -f '/etc/SSHPlus/wsproxy.py' >/dev/null 2>&1 || pgrep -f '/etc/SSHPlus/proxy.py' >/dev/null 2>&1) && echo -e "   \033[1;33m(Proxy SSHPlus en marcha pero no se leyó el puerto: actualice /bin/conexao con update_bin_modulos.sh)\033[0m"
-				echo ""
-				echo -e "   \033[1;32m[0]\033[1;31m>\033[1;33m VOLVER\033[0m"
-				echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-				echo -ne "\033[1;33mIngresa una opción:\033[1;37m "
-				read _opc
-				[[ "$_opc" = '0' ]] && return
-				continue
-			fi
-			_idx=1
-			for _unit in "${_units[@]}"; do
-				echo -e "   \033[1;32m[${_idx}]\033[1;31m>\033[1;37m ${_unit}\033[1;33m (${_src[$((_idx-1))]})\033[0m"
-				_idx=$((_idx + 1))
-			done
-			echo ""
-			echo -e "   \033[1;32m[0]\033[1;31m>\033[1;33m VOLVER\033[0m"
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			echo -ne "\033[1;33mIngresa una opción:\033[1;37m "
-			read _opc
-			[[ "$_opc" = '0' ]] && return
-			if ! [[ "$_opc" =~ ^[0-9]+$ ]]; then
-				echo -e "\033[1;31mOpción no válida\033[0m"
-				sleep 1
-				continue
-			fi
-			_sel=$((_opc - 1))
-			if (( _sel < 0 || _sel >= ${#_units[@]} )); then
-				echo -e "\033[1;31mOpción no válida\033[0m"
-				sleep 1
-				continue
-			fi
-			_unit="${_units[$_sel]}"
-			clear
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			echo -e "\033[1;33m        Estado del servicio ${_unit}\033[0m"
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			echo ""
-			_port="${_unit#python.}"
-			# Igual que en consola: systemctl status -l -n N (journal integrado, más líneas que el default).
-			if [[ "${_src[$_sel]}" = "systemd" ]]; then
-				systemctl status -l -n 50 "${_unit}.service" --no-pager 2>/dev/null
-			elif [[ "$_unit" =~ ^python\.[0-9]+$ ]] && systemctl cat "python.${_port}.service" &>/dev/null; then
-				systemctl status -l -n 50 "python.${_port}.service" --no-pager 2>/dev/null
-			else
-				_pid="$(pgrep -f "/etc/SSHPlus/proxy.py ${_port}" 2>/dev/null | head -1)"
-				[[ -z "$_pid" ]] && _pid="$(pgrep -f "/etc/SSHPlus/wsproxy.py ${_port}" 2>/dev/null | head -1)"
-				if [[ -z "$_pid" ]]; then
-					_pid="$(lsof -tiTCP:${_port} -sTCP:LISTEN 2>/dev/null | head -1)"
-				fi
-				[[ -n "$_pid" ]] && _state="\033[1;32mactivo\033[0m" || _state="\033[1;31minactivo\033[0m"
-				echo -e "Unidad systemd: \033[1;33m(no hay python.${_port}.service — eso no significa que no uses Python)\033[0m"
-				echo -e "Modo SSHPlus: \033[1;32mproxy en Python\033[0m \033[1;37m(screen; no hay servicio systemd con ese nombre)\033[0m"
-				echo -e "Estado proceso: ${_state}"
-				echo -e "Puerto: \033[1;37m${_port}\033[0m"
-				[[ -n "$_pid" ]] && echo -e "PID: \033[1;37m${_pid}\033[0m"
-				echo ""
-				netstat -nplt 2>/dev/null | awk -v p=":${_port}" '$4 ~ p {print}'
-			fi
-			echo ""
-			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-			echo -ne "\033[1;33m>> Presione enter para continuar <<\033[0m"; read
-		done
-	}
-
 	fun_socks() {
 		clear
 		echo -e "\E[44;1;37m            GERENCIAR PROXY SOCKS             \E[0m"
@@ -2012,7 +1873,6 @@ PY
 			"\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mABRIR PORTA\033[0m" \
 			"\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mMODIFICAR ESTADO SOCKS SSH\033[0m" \
 			"\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mMODIFICAR ESTADO WEBSOCKET\033[0m" \
-			"\033[1;31m[\033[1;36m7\033[1;31m] \033[1;37m• \033[1;33mESTADO DE SERVICIOS\033[0m" \
 			"\033[1;31m[\033[1;36m0\033[1;31m] \033[1;37m• \033[1;33mVOLVER\033[0m"
 		echo ""
 		echo -ne "\033[1;32m¿QUÉ DESEA HACER \033[1;33m?\033[1;37m "
@@ -2206,9 +2066,6 @@ PY
 					fi
 				fi
 			fi
-		elif [[ "$resposta" = '7' ]]; then
-			fun_servicios_python_status
-			fun_socks
 		elif [[ "$resposta" = '3' ]]; then
 			if ps x | grep -w open.py | grep -v grep 1>/dev/null 2>/dev/null; then
 				clear
