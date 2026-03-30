@@ -25,9 +25,6 @@ FTAG = '</font>'
 # Texto adicional tras el bloque COR/MSG/FTAG (p. ej. cabeceras); vacío por defecto
 POST_HEADER_RAW = ""
 DEFAULT_HOST = "127.0.0.1:22"
-# True: ignora X-Real-Host y redirige siempre a DEFAULT_HOST (más estable)
-# False: permite override por header X-Real-Host (modo flexible)
-FORCE_DEFAULT_HOST = True
 
 
 def _compose_initial_response():
@@ -195,12 +192,9 @@ class ConnectionHandler(threading.Thread):
             if isinstance(buf, bytes):
                 buf = buf.decode("latin1", errors="replace")
 
-            if FORCE_DEFAULT_HOST:
+            hostPort = self.findHeader(buf, 'X-Real-Host')
+            if hostPort == '':
                 hostPort = DEFAULT_HOST
-            else:
-                hostPort = self.findHeader(buf, 'X-Real-Host')
-                if hostPort == '':
-                    hostPort = DEFAULT_HOST
 
             split = self.findHeader(buf, 'X-Split')
 
