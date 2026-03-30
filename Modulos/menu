@@ -569,8 +569,8 @@ while true $x != "ok"
 do
 _sshplus_sync_sshplus_lang
 [[ -f /bin/sshplus_lang ]] && . /bin/sshplus_lang
-stsl=$(ps x | grep "limiter" | grep -v grep > /dev/null && echo "(ON)" || echo "(OFF)")
-stsu=$(ps x | grep "udpvpn" | grep -v grep > /dev/null && echo "(ON)" || echo "(OFF)")
+stsl=$(ps x | grep "limiter" | grep -v grep > /dev/null && echo "●" || echo "○")
+stsu=$(ps x | grep "udpvpn" | grep -v grep > /dev/null && echo "●" || echo "○")
 if [[ "$(grep -c "Ubuntu" /etc/issue.net)" = "1" ]]; then
 system=$(cut -d' ' -f1 /etc/issue.net)
 system+=$(echo ' ')
