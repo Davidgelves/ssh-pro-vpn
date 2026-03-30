@@ -38,6 +38,18 @@ fi
 unset SSHPLUS_RAW
 SSHPLUS_RAW="https://raw.githubusercontent.com/${SSHPLUS_GH_USER_REPO}/${SSHPLUS_GH_BRANCH}"
 
+# Descarga evitando caché (a veces el CDN sirve un archivo viejo y "no ves cambios").
+_sshplus_dl() {
+	local dest="$1" url="$2"
+	if command -v wget >/dev/null 2>&1; then
+		wget -qO "$dest" --header='Cache-Control: no-cache' --header='Pragma: no-cache' "$url" && return 0
+	fi
+	if command -v curl >/dev/null 2>&1; then
+		curl -fsSL -o "$dest" -H 'Cache-Control: no-cache' "$url" && return 0
+	fi
+	return 1
+}
+
 mkdir -p /etc/SSHPlus
 rm -f /etc/SSHPlus/ShellBot.sh /etc/SSHPlus/cabecalho /etc/SSHPlus/open.py /etc/SSHPlus/proxy.py /etc/SSHPlus/wsproxy.py 2>/dev/null || true
 
@@ -46,12 +58,14 @@ _dir2='/etc/SSHPlus'
 _mdls=("addhost" "ajuda" "sshplus_lang" "alterarlimite" "alterarsenha" "tcptweaker.sh" "gltunnel" "utili" "multi" "apache2menu" "check" "chuser" "limit" "rps_cpu" "attscript" "badvpn" "badpro" "badpro1" "badvpn2" "badvpn3" "banner" "bashtop" "ddos" "blocksite" "blockt" "blockuser" "bot" "botssh" "conexao" "criarteste" "criarusuario" "delhost" "delscript" "detalhes" "droplimiter" "expcleaner" "fr" "infousers" "inst-botteste" "initcheck" "instsqd" "limiter" "menu" "menub" "mudardata" "mtuning" "open.py" "otimizar" "painelv2ray" "proxy.py" "reiniciarservicos" "reiniciarsistema" "remover" "senharoot" "ShellBot.sh" "speedtest" "sshmonitor" "swapmemory" "trafegototal" "trojan-go" "uexpired" "userbackup" "verifatt" "verifbot" "v2raymanager" "webmin.sh" "websocket.sh" "wsproxy.py" "pkill.sh")
 
 echo "[*] Origen: ${SSHPLUS_RAW}/Modulos/"
-for _arq in ${_mdls[@]}; do
+for _arq in "${_mdls[@]}"; do
 	[[ -e $_dir1/$_arq ]] && rm -f "$_dir1/$_arq"
-	wget -qO "$_dir1/$_arq" "${SSHPLUS_RAW}/Modulos/$_arq" || {
+	# Parámetro anti-caché (GitHub raw a veces responde versión anterior).
+	_url="${SSHPLUS_RAW}/Modulos/${_arq}?_=$(date +%s%N 2>/dev/null || date +%s)"
+	if ! _sshplus_dl "$_dir1/$_arq" "$_url"; then
 		echo "[x] Fallo: $_arq"
 		exit 1
-	}
+	fi
 	chmod +x "$_dir1/$_arq"
 done
 # Solo mover si existen (cabecalho puede no estar en el repo)
@@ -64,3 +78,14 @@ if [[ -n "${_lvk:-}" ]]; then
 	cat /bin/versao >/home/sshplus 2>/dev/null || true
 fi
 echo "[OK] Modulos actualizados en /bin (repo ${SSHPLUS_GH_USER_REPO} @ ${SSHPLUS_GH_BRANCH})."
+if [[ -f /bin/conexao ]]; then
+	if grep -q 'ESTADO DE SERVICIOS' /bin/conexao 2>/dev/null; then
+		echo "[OK] /bin/conexao contiene la opción [7] ESTADO DE SERVICIOS."
+	else
+		echo "[!] /bin/conexao no muestra la marca reciente (¿repo/rama distinta?). Comprueba:"
+		echo "    grep ESTADO /bin/conexao | head -1"
+	fi
+	ls -la /bin/conexao 2>/dev/null || true
+fi
+echo ""
+echo "Si el menú sigue igual: sal de SSH, vuelve a entrar, o ejecuta: hash -r"
