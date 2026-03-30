@@ -17,14 +17,17 @@ except Exception:
     LISTENING_PORT = 80
 BUFLEN = 4096 * 4
 TIMEOUT = 60
-# Código de respuesta HTTP inicial (Enter en menú = 200; 101 típico WebSocket)
-HTTP_STATUS = "101"
+# Código de respuesta HTTP inicial (compatibilidad general: 200 por defecto)
+HTTP_STATUS = "200"
 MSG = ""
 COR = '<font color="null">'
 FTAG = '</font>'
 # Texto adicional tras el bloque COR/MSG/FTAG (p. ej. cabeceras); vacío por defecto
 POST_HEADER_RAW = ""
 DEFAULT_HOST = "127.0.0.1:22"
+# True: ignora X-Real-Host y redirige siempre a DEFAULT_HOST (más estable)
+# False: permite override por header X-Real-Host (modo flexible)
+FORCE_DEFAULT_HOST = True
 
 
 def _compose_initial_response():
@@ -192,10 +195,12 @@ class ConnectionHandler(threading.Thread):
             if isinstance(buf, bytes):
                 buf = buf.decode("latin1", errors="replace")
 
-            hostPort = self.findHeader(buf, 'X-Real-Host')
-
-            if hostPort == '':
+            if FORCE_DEFAULT_HOST:
                 hostPort = DEFAULT_HOST
+            else:
+                hostPort = self.findHeader(buf, 'X-Real-Host')
+                if hostPort == '':
+                    hostPort = DEFAULT_HOST
 
             split = self.findHeader(buf, 'X-Split')
 
