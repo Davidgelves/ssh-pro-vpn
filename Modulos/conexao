@@ -106,11 +106,14 @@ ensure_licence_conexao
 		for _k in $(pgrep -f '/etc/SSHPlus/proxy.py' 2>/dev/null); do
 			[[ "$_k" =~ ^[0-9]+$ ]] && kill "$_k" 2>/dev/null || true
 		done
-		sleep 1
-		for _k in $(pgrep -f '/etc/SSHPlus/proxy.py' 2>/dev/null); do
-			[[ "$_k" =~ ^[0-9]+$ ]] && kill -9 "$_k" 2>/dev/null || true
-		done
-		sleep 1
+		sleep 0.2
+		_pg_left="$(pgrep -f '/etc/SSHPlus/proxy.py' 2>/dev/null)"
+		if [[ -n "${_pg_left// }" ]]; then
+			for _k in $_pg_left; do
+				[[ "$_k" =~ ^[0-9]+$ ]] && kill -9 "$_k" 2>/dev/null || true
+			done
+			sleep 0.2
+		fi
 		for _sp in $(screen -ls 2>/dev/null | grep '\.proxy' | awk '{print $1}'); do
 			screen -r -S "$_sp" -X quit 2>/dev/null || true
 		done
@@ -122,11 +125,14 @@ ensure_licence_conexao
 		for _k in $(pgrep -f '/etc/SSHPlus/wsproxy.py' 2>/dev/null); do
 			[[ "$_k" =~ ^[0-9]+$ ]] && kill "$_k" 2>/dev/null || true
 		done
-		sleep 1
-		for _k in $(pgrep -f '/etc/SSHPlus/wsproxy.py' 2>/dev/null); do
-			[[ "$_k" =~ ^[0-9]+$ ]] && kill -9 "$_k" 2>/dev/null || true
-		done
-		sleep 1
+		sleep 0.2
+		_ws_left="$(pgrep -f '/etc/SSHPlus/wsproxy.py' 2>/dev/null)"
+		if [[ -n "${_ws_left// }" ]]; then
+			for _k in $_ws_left; do
+				[[ "$_k" =~ ^[0-9]+$ ]] && kill -9 "$_k" 2>/dev/null || true
+			done
+			sleep 0.2
+		fi
 		for _sp in $(screen -ls 2>/dev/null | grep '\.ws' | awk '{print $1}'); do
 			screen -r -S "$_sp" -X quit 2>/dev/null || true
 		done
