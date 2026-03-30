@@ -1854,28 +1854,59 @@ PY
 
 	# Estado tipo "python.<puerto> ●/○" (SOCKS SSH vs WEBSOCKET).
 	fun_servicios_python_status() {
-		local _sp _wp _sdot _wdot
-		_sp=$(ps x 2>/dev/null | grep '[S]SHPlus/proxy.py' | head -1 | awk '{print $NF}')
-		_wp=$(ps x 2>/dev/null | grep '[S]SHPlus/wsproxy.py' | head -1 | awk '{print $NF}')
-		if [[ "$_sp" =~ ^[0-9]+$ ]]; then
-			_sdot="\033[1;32m●\033[0m"
-		else
-			_sdot="\033[1;31m○\033[0m"
-			_sp="—"
-		fi
-		if [[ "$_wp" =~ ^[0-9]+$ ]]; then
-			_wdot="\033[1;32m●\033[0m"
-		else
-			_wdot="\033[1;31m○\033[0m"
-			_wp="—"
-		fi
-		echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-		echo -e "\033[1;33m   ADMINISTRACION DE SERVICIOS PYTHON\033[0m"
-		echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-		echo -e "   \033[1;32m[1]\033[1;31m>\033[1;37m python.${_sp} ${_sdot} \033[1;33mSOCKS SSH\033[0m"
-		echo -e "   \033[1;32m[2]\033[1;31m>\033[1;37m python.${_wp} ${_wdot} \033[1;33mWEBSOCKET\033[0m"
-		echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
-		echo ""
+		local _opc _sel _unit _units _idx
+		while true; do
+			_units=()
+			while IFS= read -r _unit; do
+				[[ -n "$_unit" ]] && _units+=("$_unit")
+			done < <(systemctl list-unit-files --type=service --no-pager 2>/dev/null | awk '/^python\.[0-9]+\.service/ {sub(/\.service$/, "", $1); print $1}')
+			clear
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			echo -e "\033[1;33m   ADMINISTRACION DE SERVICIOS PYTHON\033[0m"
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			if [[ ${#_units[@]} -eq 0 ]]; then
+				echo -e "   \033[1;31mNo hay servicios python.<puerto>.service\033[0m"
+				echo ""
+				echo -e "   \033[1;32m[0]\033[1;31m>\033[1;33m VOLVER\033[0m"
+				echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+				echo -ne "\033[1;33mIngresa una opción:\033[1;37m "
+				read _opc
+				[[ "$_opc" = '0' ]] && return
+				continue
+			fi
+			_idx=1
+			for _unit in "${_units[@]}"; do
+				echo -e "   \033[1;32m[${_idx}]\033[1;31m>\033[1;37m ${_unit}\033[0m"
+				_idx=$((_idx + 1))
+			done
+			echo ""
+			echo -e "   \033[1;32m[0]\033[1;31m>\033[1;33m VOLVER\033[0m"
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			echo -ne "\033[1;33mIngresa una opción:\033[1;37m "
+			read _opc
+			[[ "$_opc" = '0' ]] && return
+			if ! [[ "$_opc" =~ ^[0-9]+$ ]]; then
+				echo -e "\033[1;31mOpción no válida\033[0m"
+				sleep 1
+				continue
+			fi
+			_sel=$((_opc - 1))
+			if (( _sel < 0 || _sel >= ${#_units[@]} )); then
+				echo -e "\033[1;31mOpción no válida\033[0m"
+				sleep 1
+				continue
+			fi
+			_unit="${_units[$_sel]}"
+			clear
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			echo -e "\033[1;33m        Estado del servicio ${_unit}\033[0m"
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			echo ""
+			systemctl status "${_unit}.service" --no-pager 2>/dev/null
+			echo ""
+			echo -e "\033[1;31m══════════════════════════════════════════════════════════════\033[0m"
+			echo -ne "\033[1;33m>> Presione enter para continuar <<\033[0m"; read
+		done
 	}
 
 	fun_socks() {
@@ -2094,9 +2125,7 @@ PY
 				fi
 			fi
 		elif [[ "$resposta" = '7' ]]; then
-			clear
 			fun_servicios_python_status
-			echo -ne "\033[1;31mENTER \033[1;33mpara volver\033[0m"; read
 			fun_socks
 		elif [[ "$resposta" = '3' ]]; then
 			if ps x | grep -w open.py | grep -v grep 1>/dev/null 2>/dev/null; then
