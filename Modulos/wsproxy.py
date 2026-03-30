@@ -127,11 +127,12 @@ class Server(threading.Thread):
     def printLog(self, log):
         self.logLock.acquire()
         try:
-            print(log)
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            line = f"[{ts}] [DEBUG] {log}"
+            print(line)
             try:
-                ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 with open(LOG_FILE, "a", encoding="utf-8") as f:
-                    f.write(f"[{ts}] {log}\n")
+                    f.write(line + "\n")
             except Exception:
                 # El log en archivo no debe romper el proxy.
                 pass
@@ -173,6 +174,7 @@ class ConnectionHandler(threading.Thread):
         self.client = socClient
         self.client_buffer = b''
         self.server = server
+        self.addr = addr
         self.log = 'Connection: ' + str(addr)
 
     def close(self):
@@ -196,6 +198,12 @@ class ConnectionHandler(threading.Thread):
 
     def run(self):
         try:
+            try:
+                self.server.printLog(
+                    'Accepted connection from %s:%s' % (self.addr[0], self.addr[1])
+                )
+            except Exception:
+                self.server.printLog('Accepted connection from ' + str(self.addr))
             self.client_buffer = self.client.recv(BUFLEN)
             buf = self.client_buffer
             if isinstance(buf, bytes):
@@ -269,7 +277,7 @@ class ConnectionHandler(threading.Thread):
         self.client.sendall(RESPONSE)
         self.client_buffer = b''
 
-        self.server.printLog(self.log)
+        self.server.printLog('Redirected to ' + path)
         self.doCONNECT()
 
     def doCONNECT(self):
@@ -303,7 +311,7 @@ class ConnectionHandler(threading.Thread):
                 error = True
 
             if error:
-                self.server.printLog(self.log + " - CLOSED")
+                self.server.printLog('Connection closed')
                 break
 
 
