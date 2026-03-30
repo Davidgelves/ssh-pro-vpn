@@ -7,6 +7,7 @@ import signal
 import sys
 import time
 from os import system
+from datetime import datetime
 
 system("clear")
 # conexao
@@ -22,6 +23,7 @@ MSG = ""
 COR = '<font color="null">'
 FTAG = "</font>"
 DEFAULT_HOST = "0.0.0.0:22"
+LOG_FILE = "/var/log/sshplus-proxy.log"
 # Inyectores tipo HTTP Custom / Style suelen registrar primero "200 OK" y luego "Connection Established"
 # (a veces en saltos distintos); enviar ambas respuestas mínimas antes del túnel TCP ayuda a esos clientes.
 RESPONSE = (
@@ -40,6 +42,7 @@ class Server(threading.Thread):
         self.port = port
         self.threads = []
         self.threadsLock = threading.Lock()
+        self.logLock = threading.Lock()
 
     def run(self):
         self.soc = socket.socket(socket.AF_INET)
@@ -90,6 +93,19 @@ class Server(threading.Thread):
                 c.close()
         finally:
             self.threadsLock.release()
+
+    def printLog(self, log):
+        self.logLock.acquire()
+        try:
+            print(log)
+            try:
+                ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                with open(LOG_FILE, "a", encoding="utf-8") as f:
+                    f.write(f"[{ts}] {log}\n")
+            except Exception:
+                pass
+        finally:
+            self.logLock.release()
 			
 
 class ConnectionHandler(threading.Thread):
@@ -100,6 +116,7 @@ class ConnectionHandler(threading.Thread):
         self.client = socClient
         self.client_buffer = ''
         self.server = server
+        self.log = "Connection: " + str(addr)
 
     def close(self):
         try:
@@ -155,7 +172,7 @@ class ConnectionHandler(threading.Thread):
                 self.client.sendall(b"HTTP/1.1 400 NoXRealHost!\r\n\r\n")
 
         except Exception:
-            pass
+            self.server.printLog(self.log + " - error")
         finally:
             self.close()
             self.server.removeConn(self)
@@ -190,9 +207,11 @@ class ConnectionHandler(threading.Thread):
         self.target.connect(address)
 
     def method_CONNECT(self, path):
+        self.log += " - CONNECT " + path
         self.connect_target(path)
         self.client.sendall(RESPONSE)
         self.client_buffer = b""
+        self.server.printLog(self.log)
         self.doCONNECT()
                     
     def doCONNECT(self):
@@ -224,6 +243,7 @@ class ConnectionHandler(threading.Thread):
             if count == TIMEOUT:
                 error = True
             if error:
+                self.server.printLog(self.log + " - CLOSED")
                 break
 
 
