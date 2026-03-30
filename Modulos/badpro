@@ -2,7 +2,7 @@
 # lang=es badpro
 fun_badvpn() {
     clear
-    echo -e "\E[44;1;37m            INSTALACIÓN BADVPN PRO            \E[0m"
+    echo -e "\E[44;1;37m            GESTIONAR BADVPN PRO            \E[0m"
     echo ""
     if ps x | grep -w udpvpn | grep -v grep 1>/dev/null 2>/dev/null; then
         echo -e "\033[1;33mPUERTOS\033[1;37m: \033[1;32m$(netstat -nplt | grep 'badvpn-ud' | awk {'print $4'} | cut -d: -f2 | xargs)"

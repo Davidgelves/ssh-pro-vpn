@@ -767,14 +767,14 @@ fun_download() {
     Opc=$1
     [[ -z "$Opc" ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌Erro tente novamente")"
+            --text "$(echo -e "❌Error, inténtelo de nuevo")"
         _erro='1'
         return 0
     }
     _file2=$2
     [[ -z "$_file2" ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌Erro tente novamente")"
+            --text "$(echo -e "❌Error, inténtelo de nuevo")"
         _erro='1'
         return 0
     }
@@ -792,7 +792,7 @@ fun_download() {
     echo $_file2
     ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
         --document "@/etc/bot/arquivos/$_file" \
-        --caption "$(echo -e "✅ CREADO CORRECTAMENTE ✅\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $_file2)</code>\nSENHA: <code>$(awk -F " " '/Senha/ {print $2}' $_file2)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $_file2)\nEXPIRA EM: $(awk -F " " '/Validade/ {print $2}' $_file2)")" \
+        --caption "$(echo -e "✅ CREADO CORRECTAMENTE ✅\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $_file2)</code>\nCONTRASEÑA: <code>$(awk -F " " '/Senha/ {print $2}' $_file2)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $_file2)\nCADUCA: $(awk -F " " '/Validade/ {print $2}' $_file2)")" \
         --parse_mode html
     [[ -e "/root/$(awk -F " " '/Nome/ {print $2}' $_file2).ovpn" ]] && {
         ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
@@ -953,7 +953,7 @@ fun_teste() {
     tuserdate=$(date '+%C%y/%m/%d' -d " +2 days")
     [[ -z $t_time ]] && {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "❌ Erro tente novamente")" \
+            --text "$(echo -e "❌ Error, inténtelo de nuevo")" \
             --parse_mode html
         return 0
         _erro='1'
@@ -986,13 +986,13 @@ fun_teste() {
         for arqv in $(ls /etc/bot/arquivos); do
             ShellBot.sendDocument --chat_id ${message_from_id[$id]} \
                 --document "@/etc/bot/arquivos/$arqv" \
-                --caption "$(echo -e "✅ Criado com sucesso ✅\n\nUSUARIO: <code>$usuario</code>\nSENHA: <code>1234</code>\n\n⏳ Expira em: $t_time $hrs")" \
+                --caption "$(echo -e "✅ Creado correctamente ✅\n\nUSUARIO: <code>$usuario</code>\nCONTRASEÑA: <code>1234</code>\n\n⏳ Caduca en: $t_time $hrs")" \
                 --parse_mode html
         done
         return 0
     } || {
         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "✅ <b>Criado com sucesso</b> ✅\n\nUSUARIO: <code>$usuario</code>\nSENHA: <code>1234</code>\n\n⏳ Expira em: $t_time $hrs")" \
+            --text "$(echo -e "✅ <b>Creado correctamente</b> ✅\n\nUSUARIO: <code>$usuario</code>\nCONTRASEÑA: <code>1234</code>\n\n⏳ Caduca en: $t_time $hrs")" \
             --parse_mode html
         return 0
     }
@@ -2017,7 +2017,7 @@ while :; do
                             --reply_markup "$(ShellBot.ForceReply)"
                     } || {
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nSENHA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nEXPIRA EM: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nCONTRASEÑA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nCADUCA: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
                             --parse_mode html
                         break
                     }
@@ -2030,7 +2030,7 @@ while :; do
                             --text "$(echo -e "❌ Opcao Invalida ❌\n\n⚠️ Ultilize apenas letras [EX: sim ou nao]")" \
                             --parse_mode html
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nSENHA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nEXPIRA EM: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nCONTRASEÑA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nCADUCA: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
                             --parse_mode html
                         break
                     }
@@ -2050,7 +2050,7 @@ while :; do
                             --reply_markup "$(ShellBot.ForceReply)"
                     } || {
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nSENHA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nEXPIRA EM: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nCONTRASEÑA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nCADUCA: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
                             --parse_mode html
                     }
                     ;;
@@ -2062,7 +2062,7 @@ while :; do
                             --text "$(echo -e "❌ Opcao Invalida ❌ \n\n⚠️ Ultilize apenas numeros [EX: 1]")" \
                             --parse_mode html
                         ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nSENHA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nEXPIRA EM: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
+                            --text "<b>✅ CREADO CORRECTAMENTE ✅</b>\n\nUSUARIO: <code>$(awk -F " " '/Nome/ {print $2}' $CAD_ARQ)</code>\nCONTRASEÑA: <code>$(awk -F " " '/Senha/ {print $2}' $CAD_ARQ)</code>\nLIMITE: $(awk -F " " '/Limite/ {print $2}' $CAD_ARQ)\nCADUCA: $(awk -F " " '/Validade/ {print $2}' $CAD_ARQ)" \
                             --parse_mode html
                         >$CAD_ARQ
                         break
@@ -2078,7 +2078,7 @@ while :; do
                     fun_del_user ${message_text[$id]}
                     [[ "$_erro" == '1' ]] && break
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Removido com sucesso.* 🚮" \
+                        --text "✅ *Eliminado correctamente.* 🚮" \
                         --parse_mode markdown
                     ;;
                 '🔐 Alterar Senha 🔐\n\nNome do usuario:')
@@ -2227,7 +2227,7 @@ while :; do
                         [[ -e /etc/bot/arquivos/$_file ]] && {
                             rm /etc/bot/arquivos/$_file
                             ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                                --text "✅ *Excluido com sucesso* ✅" \
+                                --text "✅ *Eliminado correctamente* ✅" \
                                 --parse_mode markdown
                             break
                         } || {
@@ -2246,7 +2246,7 @@ while :; do
                             file_id=($file_id)
                             ShellBot.getFile --file_id "${file_id[0]}"
                             ShellBot.downloadFile --file_path ${return[file_path]} --dir "/tmp/file" && {
-                                msg='*✅ Arquivo hospedado com sucesso.*\n\n'
+                                msg='*✅ Archivo alojado correctamente.*\n\n'
                                 msg+="*📤 Informações*\n\n"
                                 msg+="*Nome*: ${message_document_file_name}\n"
                                 msg+="*Salvo em*: /etc/bot/arquivos"
@@ -2281,7 +2281,7 @@ while :; do
                             tar -xvf backup.vps
                             rm /backup.vps
                             ShellBot.sendMessage --chat_id ${id_admin} \
-                                --text "$(echo -e "✅ Backup restaurado\ncom sucesso!")" \
+                                --text "$(echo -e "✅ Copia de seguridad restaurada\ncorrectamente")" \
                                 --parse_mode html
                             break
                         }
@@ -2354,7 +2354,7 @@ while :; do
                     _clientrev=$(cat $CAD_ARQ)
                     criar_rev $CAD_ARQ
                     ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ Criado com sucesso. ✅\n\n$(<$CAD_ARQ)\n\nBOT: @${message_reply_to_message_from_username}" \
+                        --text "✅ Creado correctamente. ✅\n\n$(<$CAD_ARQ)\n\nBOT: @${message_reply_to_message_from_username}" \
                         --parse_mode html
                     ;;
                     # REMOVE REVENDEDOR

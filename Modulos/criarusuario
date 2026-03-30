@@ -116,7 +116,7 @@ fun_edithost() {
     echo -e "\033[1;31m[\033[1;36m6\033[1;31m] \033[1;33mMODO BYPASS \033[1;31m[\033[1;32mOPEN + INJECTOR\033[1;31m]"
     echo -e "\033[1;31m[\033[1;36m7\033[1;31m] \033[1;33mTODOS HOSTS \033[1;31m[\033[1;32m1 OVPN DE CADA\033[1;31m]"
     echo -e "\033[1;31m[\033[1;36m8\033[1;31m] \033[1;33mEDITAR MANUALMENTE"
-    echo -e "\033[1;31m[\033[1;36m0\033[1;31m] \033[1;33mVOLTAR"
+    echo -e "\033[1;31m[\033[1;36m0\033[1;31m] \033[1;33mVOLVER"
     echo ""
     echo -ne "\033[1;32m¿QUÉ HOST DESEA USAR \033[1;33m?\033[1;37m "
     read respo
