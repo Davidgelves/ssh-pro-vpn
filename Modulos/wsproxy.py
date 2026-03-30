@@ -8,6 +8,7 @@ import signal
 import sys
 import time
 import getopt
+from datetime import datetime
 
 PASS = ''
 LISTENING_ADDR = '0.0.0.0'
@@ -25,6 +26,7 @@ FTAG = '</font>'
 # Texto adicional tras el bloque COR/MSG/FTAG (p. ej. cabeceras); vacío por defecto
 POST_HEADER_RAW = ""
 DEFAULT_HOST = "127.0.0.1:22"
+LOG_FILE = "/var/log/sshplus-wsproxy.log"
 
 
 def _compose_initial_response():
@@ -126,6 +128,13 @@ class Server(threading.Thread):
         self.logLock.acquire()
         try:
             print(log)
+            try:
+                ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                with open(LOG_FILE, "a", encoding="utf-8") as f:
+                    f.write(f"[{ts}] {log}\n")
+            except Exception:
+                # El log en archivo no debe romper el proxy.
+                pass
         finally:
             self.logLock.release()
 
@@ -294,6 +303,7 @@ class ConnectionHandler(threading.Thread):
                 error = True
 
             if error:
+                self.server.printLog(self.log + " - CLOSED")
                 break
 
 
